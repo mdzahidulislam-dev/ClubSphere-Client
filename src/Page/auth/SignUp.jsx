@@ -29,23 +29,19 @@ const SignUp = () => {
   const signUp = async (data) => {
     try {
       setLoading(true);
-      const profileImg = data.photo[0];
+      const profileImg = data.photo?.[0];
 
-      // 1️⃣ Create user
+      //  Create user
       await createUserWithEmailAndPasswordfunc(data.email, data.password);
-      setLoading(true);
       toast.success("Sign up Successful");
 
-      // 2️⃣ Upload profile image to imgbb
+      //  Upload profile image to imgbb
       let photoURL = "";
       if (profileImg) {
         const formData = new FormData();
         formData.append("image", profileImg);
 
-        const url = `https://api.imgbb.com/1/upload?key=${
-          import.meta.env.VITE_image_hosting_key
-        }`;
-
+        const url = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_hosting_key}`;
         const res = await axios.post(url, formData);
         photoURL = res.data.data.display_url;
       }
@@ -53,16 +49,23 @@ const SignUp = () => {
         name: data.displayName,
         email: data.email,
         photoURL: photoURL,
-        role: "member"
+        role: "member",
+        createdAt: new Date().toISOString(),
+        createdDate: new Date().toLocaleDateString("en-GB"),
+        createdTime: new Date().toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
 
-      axiosSecure.post("/users", userInfo).then(() => {});
+      await axiosSecure.post("/users", userInfo);
 
-      // 3️⃣ Update Firebase profile
+      //  Update Firebase profile
       await updateProfileFunc({
         displayName: data.displayName,
         photoURL,
       });
+      
       navigate(location.state || "/");
     } catch (error) {
       const cleanMessage = error.code

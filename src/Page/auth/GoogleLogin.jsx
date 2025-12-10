@@ -10,38 +10,42 @@ const GoogleLogin = () => {
   const location = useLocation();
   const axiosSecure = useAxios();
 
-  const handelGoogleSignin = (e) => {
-    setLoading(true);
+  const handelGoogleSignin = async (e) => {
     e.preventDefault();
-    signInWithGoogleFunc()
-      .then((result) => {
-        toast.success("Log in Succesful");
+    try {
+      setLoading(true);
 
-        const userInfo = {
-          name: result.user.displayName,
-          email: result.user.email,
-          photoURL: result.user.photoURL,
-          role: "member"
-        };
+      const result = await signInWithGoogleFunc();
+      toast.success("Log in Successful");
 
-        axiosSecure.post("/users", userInfo).then(() => {});
+      const userInfo = {
+        name: result.user.displayName,
+        email: result.user.email,
+        photoURL: result.user.photoURL,
+        role: "member",
+        createdAt: new Date().toISOString(),
+        createdDate: new Date().toLocaleDateString("en-GB"),
+        createdTime: new Date().toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
 
-        setUser(result.user);
-        navigate(location.state || "/");
-      })
-      .catch((error) => {
-        const cleanMessage = error.code
-          .replace("auth/", "")
-          .replaceAll("-", " ");
-        toast.error(cleanMessage);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      // Save user in database
+      await axiosSecure.post("/users", userInfo);
+      setUser(result.user);
+
+      // Navigate
+      navigate(location.state || "/");
+    } catch (error) {
+      const cleanMessage = error.code
+        ? error.code.replace("auth/", "").replaceAll("-", " ")
+        : error.message;
+      toast.error(cleanMessage);
+    } finally {
+      setLoading(false);
+    }
   };
-
-  console.log(location.state);
-
   return (
     <button
       onClick={handelGoogleSignin}

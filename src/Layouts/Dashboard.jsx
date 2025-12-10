@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import useAuth from "../Hooks/useAuth";
@@ -8,21 +8,29 @@ import Footer from "../Components/Footer";
 import { CgProfile } from "react-icons/cg";
 import {
   MdEvent,
+  MdEventAvailable,
+  MdEventNote,
   MdOutlineDashboard,
   MdOutlineManageAccounts,
+  MdOutlinePayments,
 } from "react-icons/md";
-import { FaUserGroup, FaUsersGear } from "react-icons/fa6";
+import { FaUserGroup, FaUsers, FaUsersGear } from "react-icons/fa6";
 import { FaHome } from "react-icons/fa";
 import useAxios from "../Hooks/useAxios";
+import { RiTeamLine } from "react-icons/ri";
 
 const Dashboard = () => {
   const { signOutFunc, setUser, user } = useAuth();
   const [userRole, setUserRole] = useState();
   const axiosSecure = useAxios();
   const navigate = useNavigate();
-  axiosSecure(`/users/${user?.email}`).then((res) => {
-    setUserRole(res.data.role);
-  });
+  useEffect(() => {
+    if (!user?.email) return;
+
+    axiosSecure(`/users/${user.email}`).then((res) => {
+      setUserRole(res.data.role);
+    });
+  }, [user, axiosSecure]);
   const handelSignOut = () => {
     signOutFunc()
       .then(() => {
@@ -40,26 +48,77 @@ const Dashboard = () => {
       ? [{ name: "PROFILE", path: "/profile", icon: <CgProfile /> }]
       : []),
   ];
-  const dashboardNavItems = [
-    {
-      name: "Dashboard",
-      path: "/dashboard/admin",
-      icon: <MdOutlineDashboard />,
-    },
-    {
-      name: "Manage Users",
-      path: "/dashboard/admin/manage-users",
-      icon: <MdOutlineManageAccounts />,
-    },
-    {
-      name: "Manage Clubs",
-      path: "/dashboard/admin/manage-clubs",
-      icon: <FaUsersGear />,
-    },
-    ...(user
-      ? [{ name: "PROFILE", path: "/profile", icon: <CgProfile /> }]
-      : []),
-  ];
+  const dashboardNavItems = useMemo(() => {
+    const items = [
+      {
+        name: "Overview",
+        path: `/dashboard/${userRole}`,
+        icon: <MdOutlineDashboard />,
+      },
+    ];
+
+    if (userRole === "admin") {
+      items.push(
+        {
+          name: "Manage Users",
+          path: "/dashboard/admin/manage-users",
+          icon: <FaUsersGear />,
+        },
+        {
+          name: "Manage Clubs",
+          path: "/dashboard/admin/manage-clubs",
+          icon: <MdOutlineManageAccounts />,
+        },
+        {
+          name: "View Payments",
+          path: "/dashboard/admin/view-payments",
+          icon: <MdOutlinePayments />
+        }
+      );
+    } else if (userRole === "manager") {
+      items.push(
+        {
+          name: "My Clubs",
+          path: "/dashboard/manager/my-clubs",
+          icon: <MdOutlineManageAccounts />,
+        },
+        {
+          name: "Club Members",
+          path: "/dashboard/manager/club-members",
+          icon: <RiTeamLine />
+        },
+        {
+          name: "Events Management",
+          path: "/dashboard/manager/events-management",
+          icon: <MdEventNote />
+        },
+        {
+          name: "Event Registrations",
+          path: "/dashboard/manager/event-registrations",
+          icon: <MdEventAvailable />
+        }
+      );
+    } else if (userRole === "member") {
+      items.push(
+        {
+          name: "My Clubs",
+          path: "/dashboard/member/my-clubs",
+          icon: <FaUsers />
+        },
+        {
+          name: "My Events",
+          path: "/dashboard/member/my-events",
+          icon: <MdEvent />,
+        },
+        {
+          name: "Payment History",
+          path: "/dashboard/member/payment-history",
+          icon: <MdOutlinePayments />
+        }
+      );
+    }
+    return items;
+  }, [userRole]);
 
   const navItem = (
     <>
@@ -270,27 +329,6 @@ const Dashboard = () => {
                 </Link>
               </li>
             ))}
-            <li>
-              <Link
-                to="/dashboard"
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Homepage">
-                {/* Home icon */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="2"
-                  fill="none"
-                  stroke="currentColor"
-                  className="my-1.5 inline-block size-4">
-                  <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
-                  <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                </svg>
-                <span className="is-drawer-close:hidden">Home</span>
-              </Link>
-            </li>
           </ul>
         </div>
       </div>

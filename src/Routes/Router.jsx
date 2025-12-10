@@ -9,11 +9,20 @@ import ForgotPass from "../Page/auth/ForgotPass";
 import Clubs from "../Page/Clubs/Clubs";
 import Events from "../Page/Events/Events";
 import Dashboard from "../Layouts/Dashboard";
-import Overview from "../Page/Dashboard/Admin/Overview";
 import PrivateRoute from "./PrivateRoute";
-import ManageUsers from "../Page/Dashboard/ManageUsers/ManageUsers";
 import Profile from "../Page/Profile/Profile";
-import ManageClubs from "../Page/Dashboard/ManageClubs/ManageClubs";
+import AdminOverview from "../Page/Dashboard/Admin/Admin Overview/AdminOverview";
+import ManageUsers from "../Page/Dashboard/Admin/ManageUsers/ManageUsers";
+import ManageClubs from "../Page/Dashboard/Admin/ManageClubs/ManageClubs";
+import ViewPayments from "../Page/Dashboard/Admin/View Payments/ViewPayments";
+import ManagerOverview from "../Page/Dashboard/Club Manager/Manager Overview/ManagerOverview";
+import MyClubs from "../Page/Dashboard/Club Manager/My Clubs/MyClubs";
+import ClubMembers from "../Page/Dashboard/Club Manager/Club Members/ClubMembers";
+import EventsManagement from "../Page/Dashboard/Club Manager/Events Management/EventsManagement";
+import EventRegistrations from "../Page/Dashboard/Club Manager/Event Registrations/EventRegistrations";
+import MemberOverview from "../Page/Dashboard/Member/Member Overview/MemberOverview";
+import MyEvents from "../Page/Dashboard/Member/My Events/MyEvents";
+import PaymentHistory from "../Page/Dashboard/Member/Payment History/PaymentHistory";
 
 export const router = createBrowserRouter([
   {
@@ -32,52 +41,97 @@ export const router = createBrowserRouter([
       },
       {
         path: "sign-up",
-        element: <SignUp></SignUp>
+        element: <SignUp></SignUp>,
       },
       {
         path: "forgot-password",
-        element: <ForgotPass></ForgotPass>
+        element: <ForgotPass></ForgotPass>,
       },
       {
         path: "Clubs",
-        element: <Clubs></Clubs>
+        element: <Clubs></Clubs>,
       },
       {
         path: "events",
-        element: <Events></Events>
+        element: <Events></Events>,
       },
       {
         path: "profile",
-        element: <PrivateRoute><Profile></Profile></PrivateRoute>
+        element: (
+          <PrivateRoute>
+            <Profile></Profile>
+          </PrivateRoute>
+        ),
       },
     ],
   },
   {
-    path:"/dashboard",
-    element:<PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
-    hydrateFallbackElement:<Loader></Loader>,
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <Dashboard></Dashboard>
+      </PrivateRoute>
+    ),
+    hydrateFallbackElement: <Loader></Loader>,
     errorElement: <PageNotFound></PageNotFound>,
-    children:[
+    children: [
+      //admin routes
       {
-        path:"/dashboard/admin",
-        element:<Overview></Overview>
+        path: "/dashboard/admin",
+        element: <AdminOverview></AdminOverview>,
       },
       {
-        path:"/dashboard/member",
-        element:<Overview></Overview>
+        path: "/dashboard/admin/manage-users",
+        element: <ManageUsers></ManageUsers>,
       },
       {
-        path:"/dashboard/manager",
-        element:<Overview></Overview>
+        path: "/dashboard/admin/manage-clubs",
+        element: <ManageClubs></ManageClubs>,
       },
       {
-        path:"/dashboard/admin/manage-users",
-        element:<ManageUsers></ManageUsers>
+        path: "/dashboard/admin/view-payments",
+        element: <ViewPayments></ViewPayments>,
+      },
+
+      //Manager routes
+      {
+        path: "/dashboard/manager",
+        element: <ManagerOverview></ManagerOverview>,
       },
       {
-        path:"/dashboard/admin/manage-clubs",
-        element:<ManageClubs></ManageClubs>
+        path: "/dashboard/manager/my-clubs",
+        element: <MyClubs></MyClubs>,
       },
-    ]
-  }
+      {
+        path: "/dashboard/manager/club-members",
+        element: <ClubMembers></ClubMembers>,
+      },
+      {
+        path: "/dashboard/manager/events-management",
+        element: <EventsManagement></EventsManagement>,
+      },
+      {
+        path: "/dashboard/manager/event-registrations",
+        element: <EventRegistrations></EventRegistrations>,
+      },
+
+      //member routes
+      {
+        path: "/dashboard/member",
+        element: <MemberOverview></MemberOverview>,
+      },
+      {
+        path: "/dashboard/member/my-clubs",
+        element: <MyClubs></MyClubs>,
+      },
+      {
+        path: "/dashboard/member/my-events",
+        element: <MyEvents></MyEvents>,
+      },
+      {
+        path: "/dashboard/member/payment-history",
+        element: <PaymentHistory></PaymentHistory>,
+      },
+    ],
+  },
 ]);

@@ -30,10 +30,10 @@ const Footer = () => {
                   <a href="/">Home</a>
                 </li>
                 <li>
-                  <a href="#">About</a>
+                  <a href="/clubs">Clubs</a>
                 </li>
                 <li>
-                  <a href="#">Contact</a>
+                  <a href="/events">Events</a>
                 </li>
               </ul>
             </div>
@@ -52,7 +52,7 @@ const Footer = () => {
                     type="email"
                     placeholder="Enter your email"
                   />
-                  <button className="bg-primary bg-hover w-24 h-9 text-white rounded">
+                  <button className="bg-primary bg-hover w-24 h-9 text-white rounded px-2">
                     Subscribe
                   </button>
                 </div>

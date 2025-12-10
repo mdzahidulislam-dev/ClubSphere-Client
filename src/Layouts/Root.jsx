@@ -1,24 +1,11 @@
-import React, { useEffect } from "react";
 import Navbar from "../Components/Navbar";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Footer from "../Components/Footer";
 import Loader from "../Components/Loader";
 import useAuth from "../Hooks/useAuth";
 
 const Root = () => {
-  const { loading, setLoading, user } = useAuth();
-  const location = useLocation();
-
-  useEffect(() => {
-    setLoading(true);
-
-    if (user) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
-    }
-  }, [location, setLoading, user]);
-
+  const { loading } = useAuth();
   return (
     <>
       {loading ? (

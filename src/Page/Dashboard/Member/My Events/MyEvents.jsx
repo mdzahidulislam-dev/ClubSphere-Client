@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Overview = () => {
+const MyEvents = () => {
     return (
         <div>
-             over view
+            my events
         </div>
     );
 };
 
-export default Overview;
+export default MyEvents;

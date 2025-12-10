@@ -1,11 +1,11 @@
 import React from 'react';
 
-const ManageUsers = () => {
+const ClubMembers = () => {
     return (
         <div>
-            all users
+            club members
         </div>
     );
 };
 
-export default ManageUsers;
+export default ClubMembers;
