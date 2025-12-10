@@ -9,8 +9,11 @@ import ForgotPass from "../Page/auth/ForgotPass";
 import Clubs from "../Page/Clubs/Clubs";
 import Events from "../Page/Events/Events";
 import Dashboard from "../Layouts/Dashboard";
-import AdminOverview from "../Page/Dashboard/Admin/AdminOverview";
-import Profile from "../Page/Profile/profile";
+import Overview from "../Page/Dashboard/Admin/Overview";
+import PrivateRoute from "./PrivateRoute";
+import ManageUsers from "../Page/Dashboard/ManageUsers/ManageUsers";
+import Profile from "../Page/Profile/Profile";
+import ManageClubs from "../Page/Dashboard/ManageClubs/ManageClubs";
 
 export const router = createBrowserRouter([
   {
@@ -45,20 +48,36 @@ export const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element: <Profile></Profile>
+        element: <PrivateRoute><Profile></Profile></PrivateRoute>
       },
     ],
   },
   {
     path:"/dashboard",
-    element:<Dashboard></Dashboard>,
+    element:<PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
     hydrateFallbackElement:<Loader></Loader>,
     errorElement: <PageNotFound></PageNotFound>,
     children:[
       {
-        path:"/dashboard",
-        element:<AdminOverview></AdminOverview>
-      }
+        path:"/dashboard/admin",
+        element:<Overview></Overview>
+      },
+      {
+        path:"/dashboard/member",
+        element:<Overview></Overview>
+      },
+      {
+        path:"/dashboard/manager",
+        element:<Overview></Overview>
+      },
+      {
+        path:"/dashboard/admin/manage-users",
+        element:<ManageUsers></ManageUsers>
+      },
+      {
+        path:"/dashboard/admin/manage-clubs",
+        element:<ManageClubs></ManageClubs>
+      },
     ]
   }
 ]);

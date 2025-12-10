@@ -37,11 +37,8 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
-  const updateProfileFunc = (displayName, photoURL) => {
-    return updateProfile(auth.currentUser, {
-      displayName,
-      photoURL,
-    });
+  const updateProfileFunc = (profile) => {
+    return updateProfile(auth.currentUser, profile);
   };
 
   const sendPasswordResetEmailFunc = (email) => {
@@ -52,7 +49,11 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setLoading(false);
+      console.log(currentUser);
+      
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     });
     return () => unsubscribe();
   }, []);

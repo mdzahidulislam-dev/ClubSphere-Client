@@ -6,10 +6,7 @@ const ForgotPass = () => {
   const location = useLocation();
   const email = location.state?.email || "";
   const navigate = useNavigate();
-  const {
-    setLoading,
-    sendPasswordResetEmailFunc,
-  } = useAuth();
+  const { setLoading, sendPasswordResetEmailFunc } = useAuth();
 
   const {
     register,
@@ -97,6 +94,7 @@ const ForgotPass = () => {
           <p className="text-gray-500/90 text-sm mt-4 text-center">
             Do you know your password?{" "}
             <Link
+              state={location.state}
               to="/login"
               className="text-primary hover:underline font-medium">
               Log in

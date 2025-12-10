@@ -1,20 +1,31 @@
-import React, { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router";
+import React, { useEffect, useState } from "react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { toast } from "react-toastify";
 import { LogOut } from "lucide-react";
 import useAuth from "../Hooks/useAuth";
+import { FaHome } from "react-icons/fa";
+import { FaUserGroup } from "react-icons/fa6";
+import { MdEvent, MdOutlineDashboard } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
+import useAxios from "../Hooks/useAxios";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const { signOutFunc, setUser, user, setLoading } = useAuth();
+  const { signOutFunc, setUser, user } = useAuth();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
+  const axiosSecure = useAxios();
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState();
 
-  if (!user) {
-    return setLoading(true);
-  }
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  const handelSignOut = () => {
+  const handleSignOut = () => {
     signOutFunc()
       .then(() => {
         toast.success("Sign out successfully");
@@ -23,12 +34,21 @@ const Navbar = () => {
       })
       .catch((error) => console.error("SignOut error:", error.message));
   };
+
   const navItems = [
-    { name: "HOME", path: "/" },
-    { name: "CLUBS", path: "/clubs" },
-    { name: "EVENTS", path: "/events" },
-    ...(user ? [{ name: "PROFILE", path: "/profile" }] : []),
+    { name: "HOME", path: "/", icon: <FaHome /> },
+    { name: "CLUBS", path: "/clubs", icon: <FaUserGroup /> },
+    { name: "EVENTS", path: "/events", icon: <MdEvent /> },
+    ...(user
+      ? [{ name: "PROFILE", path: "/profile", icon: <CgProfile /> }]
+      : []),
   ];
+
+  axiosSecure(`/users/${user?.email}`).then((res) => {
+    setUserRole(res.data.role);
+  });
+
+console.log(user);
 
   const navItem = (
     <>
@@ -42,14 +62,14 @@ const Navbar = () => {
             }`
           }>
           {({ isActive }) => (
-            <>
+            <div className="flex items-center gap-1">
+              <div>{item.icon}</div>
               {item.name}
               <span
-                className={`
-            absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300
-            ${isActive ? "w-full" : "w-0 group-hover:w-full"}
-          `}></span>
-            </>
+                className={`absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                  isActive ? "w-full" : "w-0 group-hover:w-full"
+                }`}></span>
+            </div>
           )}
         </NavLink>
       ))}
@@ -57,12 +77,14 @@ const Navbar = () => {
       {!user && (
         <>
           <NavLink
+            state={location.state}
             to="/login"
-            className="px-4 py-2 rounded  border border-primary bg-primary text-white  transition btn">
+            className="px-4 py-2 rounded border border-primary bg-primary text-white transition btn">
             Log in
           </NavLink>
 
           <NavLink
+            state={location.state}
             to="/sign-up"
             className="px-4 py-2 rounded text-primary border border-primary hover:bg-primary hover:text-white transition btn">
             Sign Up
@@ -73,13 +95,18 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="fixed top-0 w-full z-50 ">
-      <div className="max-w-7xl mx-auto px-6 lg:px-0">
+    <nav className="fixed top-0 w-full z-50">
+      <div
+        className={`absolute inset-0 transition-all duration-300 ${
+          isScrolled ? "backdrop-blur bg-white/70 shadow-md" : "bg-transparent"
+        }`}></div>
+
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-0">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo} className="w-10" />
-            <h1 className="text-primary  text-xl font-bold neon-text ">
+            <img src={logo} className="w-10" alt="logo" />
+            <h1 className="text-primary text-xl font-bold neon-text">
               Club
               <span className="text-secondary hover:text-primary">Sphere</span>
             </h1>
@@ -90,7 +117,7 @@ const Navbar = () => {
             {navItem}
           </div>
 
-          {/* Mobile Menu */}
+          {/* Mobile Menu Toggle */}
           {!user && (
             <button
               className="md:hidden text-3xl text-primary"
@@ -101,15 +128,14 @@ const Navbar = () => {
 
           {/* User Avatar */}
           {user && (
-            <div className=" ml-4 dropdown dropdown-end">
+            <div className="ml-4 dropdown dropdown-end">
               <div tabIndex={0} className="btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
                   <img
                     alt="User avatar"
                     src={
                       user?.photoURL ||
-                      user?.reloadUserInfo?.photoUrl ||
-                      "https://i.ibb.co/0Qp1W33/default-avatar.png"
+                      "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
                     }
                   />
                 </div>
@@ -117,60 +143,65 @@ const Navbar = () => {
 
               <ul
                 tabIndex={0}
-                className="dropdown-content menu p-4 backdrop-blur rounded-lg text-white w-56 bg-secondary/20">
-                <h3 className="font-bold text-black">{user?.displayName}</h3>
+                className="dropdown-content menu p-4 backdrop-blur rounded-lg text-black w-56 bg-secondary/10">
+                <h3 className="font-bold">{user?.displayName}</h3>
                 <p className="text-xs mb-2 text-gray-600">{user?.email}</p>
 
-                <div className=" hologram    flex flex-col items-left text-black">
-                  <div className="flex flex-col md:hidden space-y-4">
-                    {navItem}
-                  </div>
-                  <div className="flex flex-col space-y-4 mt-4">
-                    <NavLink
-                      to="/profile"
-                      className={({ isActive }) =>
-                        `relative transition-all duration-300 group px-3 py-2 rounded font-bold ${
-                          isActive ? "text-primary" : "hover:text-primary"
-                        }`
-                      }>
-                      {({ isActive }) => (
-                        <>
-                          PROFILE
-                          <span
-                            className={`
-            absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300
-            ${isActive ? "w-full" : "w-0 group-hover:w-full"}
-          `}></span>
-                        </>
-                      )}
-                    </NavLink>
-                    <NavLink
-                      to="/dashboard"
-                      className={({ isActive }) =>
-                        `relative transition-all duration-300 group px-3 py-2 rounded font-bold ${
-                          isActive ? "text-primary" : "hover:text-primary"
-                        }`
-                      }>
-                      {({ isActive }) => (
-                        <>
-                          DASHBOARD
-                          <span
-                            className={`
-            absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300
-            ${isActive ? "w-full" : "w-0 group-hover:w-full"}
-          `}></span>
-                        </>
-                      )}
-                    </NavLink>
-                  </div>
-                  {user && (
-                    <button
-                      onClick={handelSignOut}
-                      className="mt-4 w-full flex items-center gap-2 justify-center bg-primary text-white bg-hover p-2 rounded ">
-                      <LogOut size={18} />
-                      Logout
-                    </button>
+                <div className="flex flex-col space-y-4 mt-4">
+                  {/* Mobile Dropdown */}
+                  {!open && user && (
+                    <div className="md:hidden flex justify-end flex-col space-y-4">
+                      {navItem}
+                    </div>
                   )}
+                  <NavLink
+                    to="/profile"
+                    className={({ isActive }) =>
+                      `relative transition-all duration-300 group px-3 py-2 rounded font-bold hidden md:block ${
+                        isActive ? "text-primary" : "hover:text-primary"
+                      }`
+                    }>
+                    {({ isActive }) => (
+                      <div className="flex items-center gap-1">
+                        <div>
+                          <CgProfile />
+                        </div>
+                        PROFILE
+                        <span
+                          className={`absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                            isActive ? "w-full" : "w-0 group-hover:w-full"
+                          }`}></span>
+                      </div>
+                    )}
+                  </NavLink>
+
+                  <NavLink
+                    to={`/dashboard/${userRole}`}
+                    className={({ isActive }) =>
+                      `relative transition-all duration-300 group px-3 py-2 rounded font-bold ${
+                        isActive ? "text-primary" : "hover:text-primary"
+                      }`
+                    }>
+                    {({ isActive }) => (
+                      <div className="flex items-center gap-1">
+                        <div>
+                          <MdOutlineDashboard />
+                        </div>
+                        DASHBOARD
+                        <span
+                          className={`absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                            isActive ? "w-full" : "w-0 group-hover:w-full"
+                          }`}></span>
+                      </div>
+                    )}
+                  </NavLink>
+
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-2 justify-center bg-primary text-white p-2 rounded">
+                    <LogOut size={18} />
+                    Logout
+                  </button>
                 </div>
               </ul>
             </div>
@@ -178,17 +209,10 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Dropdown */}
-        {open && (
-          <div className="flex justify-end">
-            <div className="md:hidden  w-56  px-6 py-4 space-y-4 flex flex-col bg-secondary/20 backdrop-blur ">
+        {open && !user && (
+          <div className="md:hidden flex justify-end">
+            <div className="w-56 px-6 py-4 space-y-4 flex flex-col bg-secondary/10 backdrop-blur">
               {navItem}
-              {user && (
-                <button
-                  onClick={handelSignOut}
-                  className="block w-full bg-primary text-white bg-hover p-2 rounded ">
-                  Logout
-                </button>
-              )}
             </div>
           </div>
         )}

@@ -1,34 +1,61 @@
-import React from "react";
 import useAuth from "../../Hooks/useAuth";
-import { Link } from "react-router-dom";
 import element1 from "../../assets/element1.png";
 import element2 from "../../assets/element2.png";
 import element3 from "../../assets/element3.png";
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaLinkedinIn,
-  FaTwitter,
-} from "react-icons/fa";
-import { AtSign, Image } from "lucide-react";
+import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { AtSign } from "lucide-react";
 import { useForm } from "react-hook-form";
+import PhotoInput from "../../Components/PhotoInput";
+import axios from "axios";
+import useAxios from "../../Hooks/useAxios";
+import { toast } from "react-toastify";
 
 const Profile = () => {
-  const { user, setLoading } = useAuth();
-
+  const { user, setLoading, updateProfileFunc } = useAuth();
+  const axiosSecure = useAxios();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  if (!user) {
-    setLoading(true);
-    return null;
-  }
+  const updateInfo = async (data) => {
+    try {
+      setLoading(true);
+      const profileImg = data?.photo?.[0];
+      let photoURL = user?.photoURL || "";
 
-  const updateInfo = (data) => {
-    console.log(data);
+      if (profileImg) {
+        const formData = new FormData();
+        formData.append("image", profileImg);
+
+        const url = `https://api.imgbb.com/1/upload?key=${
+          import.meta.env.VITE_image_hosting_key
+        }`;
+        const res = await axios.post(url, formData);
+        photoURL = res.data.data.display_url;
+      }
+      // database update user info
+      const updateduserInfo = {
+        name: data.displayName,
+        photoURL: photoURL,
+      };
+
+      axiosSecure.patch(`/users/${user.email}`, updateduserInfo).then(() => {
+        toast.success("Your info updated successfully");
+      });
+
+      // Firebase profile update
+      await updateProfileFunc({
+        displayName: data.displayName,
+        photoURL: photoURL,
+      });
+      await user.reload();
+
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <div className="">
@@ -38,29 +65,29 @@ const Profile = () => {
         <main className="relative flex flex-col items-center px-2 md:px-5 mx-5 rounded-4xl shadow-2xl justify-center  py-15 bg-white">
           <img
             src={element1}
-            className=" object-cover absolute z-50 bottom-0 left-0"
+            className=" object-cover absolute z-5 bottom-0 left-0"
           />
           <img
             src={element2}
-            className=" object-cover absolute z-50 top-10 left-10"
+            className=" object-cover absolute z-5 top-10 left-10"
           />
           <img
             src={element3}
-            className=" object-cover absolute z-50 top-10 right-10"
+            className=" object-cover absolute z-5 top-10 right-10"
           />
           <div className="flex flex-col items-center gap-4">
-            <div>
+            <div className="">
               <img
-                src={user?.reloadUserInfo.photoUrl}
+                src={user?.photoURL}
                 alt=""
                 className="bg-center bg-cover rounded-full w-32 h-32 border-4 border-secondary"
               />
             </div>
             <div className="text-center">
               <p className="text-primary text-4xl font-bold">
-                {user?.reloadUserInfo.displayName}
+                {user?.displayName}
               </p>
-              <p className=" text-base">{user?.reloadUserInfo.email}</p>
+              <p className=" text-base">{user?.email}</p>
             </div>
           </div>
 
@@ -97,13 +124,22 @@ const Profile = () => {
             className="w-full max-w-md md:w-96 flex flex-col">
             <div className="w-full space-y-6">
               <div className="relative w-full">
+                <PhotoInput>
+                  <input
+                    className="file-input-bordered file-input-primary file-input w-full bg-transparent text-sm"
+                    type="file"
+                    {...register("photo")}
+                  />
+                </PhotoInput>
+              </div>
+              <div className="relative w-full">
                 <div className="flex items-center w-full bg-transparent border border-primary/60 h-12 rounded-full overflow-hidden px-4 gap-2">
                   <AtSign color="#FF5656" size={18} />
                   <input
                     type="text"
-                    defaultValue={user?.reloadUserInfo.displayName}
+                    defaultValue={user?.displayName}
                     placeholder="Your Name"
-                    {...register("displayName", { required: true })}
+                    {...register("displayName")}
                     className="bg-transparent placeholder-gray-500/80 outline-none text-sm w-full h-full"
                   />
                 </div>
@@ -112,25 +148,6 @@ const Profile = () => {
                 {errors.displayName && (
                   <div className="absolute -top-5 mt-1 right-0 bg-red-500 text-white text-xs px-3 py-1 rounded shadow-lg animate-fadeIn">
                     Name is Required
-                  </div>
-                )}
-              </div>
-
-              <div className="relative w-full">
-                <div className="flex  items-center w-full bg-transparent border border-primary/60 h-12 rounded-full overflow-hidden px-4 gap-2">
-                  <Image color="#FF5656" size={18} />
-                  <input
-                    type="text"
-                    defaultValue={user?.reloadUserInfo.photoUrl}
-                    {...register("photoURL", { required: true })}
-                    placeholder="Enter your Image link"
-                    className="bg-transparent placeholder-gray-500/80 outline-none text-sm w-full h-full"
-                  />
-                </div>
-                {/* Popup Error */}
-                {errors.photoURL && (
-                  <div className="absolute -top-5 mt-1 right-0 bg-red-500 text-white text-xs px-3 py-1 rounded shadow-lg animate-fadeIn">
-                    Photo is Required
                   </div>
                 )}
               </div>
@@ -152,8 +169,8 @@ const Profile = () => {
                   </svg>
                   <input
                     type="email"
-                    {...register("email", { required: true })}
-                    defaultValue={user?.reloadUserInfo.email}
+                    {...register("email")}
+                    value={user?.email}
                     placeholder="Your Email Address"
                     className="bg-transparent placeholder-gray-500/80 outline-none text-sm w-full h-full"
                   />

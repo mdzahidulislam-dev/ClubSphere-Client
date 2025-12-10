@@ -1,14 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import useAuth from "../Hooks/useAuth";
 import { toast } from "react-toastify";
 import { LogOut } from "lucide-react";
 import Footer from "../Components/Footer";
+import { CgProfile } from "react-icons/cg";
+import {
+  MdEvent,
+  MdOutlineDashboard,
+  MdOutlineManageAccounts,
+} from "react-icons/md";
+import { FaUserGroup, FaUsersGear } from "react-icons/fa6";
+import { FaHome } from "react-icons/fa";
+import useAxios from "../Hooks/useAxios";
 
 const Dashboard = () => {
   const { signOutFunc, setUser, user } = useAuth();
+  const [userRole, setUserRole] = useState();
+  const axiosSecure = useAxios();
   const navigate = useNavigate();
+  axiosSecure(`/users/${user?.email}`).then((res) => {
+    setUserRole(res.data.role);
+  });
   const handelSignOut = () => {
     signOutFunc()
       .then(() => {
@@ -19,10 +33,32 @@ const Dashboard = () => {
       .catch((error) => console.error("SignOut error:", error.message));
   };
   const navItems = [
-    { name: "HOME", path: "/" },
-    { name: "CLUBS", path: "/clubs" },
-    { name: "EVENTS", path: "/events" },
-    ...(user ? [{ name: "PROFILE", path: "/profile" }] : []),
+    { name: "HOME", path: "/", icon: <FaHome /> },
+    { name: "CLUBS", path: "/clubs", icon: <FaUserGroup /> },
+    { name: "EVENTS", path: "/events", icon: <MdEvent /> },
+    ...(user
+      ? [{ name: "PROFILE", path: "/profile", icon: <CgProfile /> }]
+      : []),
+  ];
+  const dashboardNavItems = [
+    {
+      name: "Dashboard",
+      path: "/dashboard/admin",
+      icon: <MdOutlineDashboard />,
+    },
+    {
+      name: "Manage Users",
+      path: "/dashboard/admin/manage-users",
+      icon: <MdOutlineManageAccounts />,
+    },
+    {
+      name: "Manage Clubs",
+      path: "/dashboard/admin/manage-clubs",
+      icon: <FaUsersGear />,
+    },
+    ...(user
+      ? [{ name: "PROFILE", path: "/profile", icon: <CgProfile /> }]
+      : []),
   ];
 
   const navItem = (
@@ -37,14 +73,15 @@ const Dashboard = () => {
             }`
           }>
           {({ isActive }) => (
-            <>
+            <div className="flex items-center gap-1">
+              <div>{item.icon}</div>
               {item.name}
               <span
                 className={`
             absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300
             ${isActive ? "w-full" : "w-0 group-hover:w-full"}
           `}></span>
-            </>
+            </div>
           )}
         </NavLink>
       ))}
@@ -67,9 +104,9 @@ const Dashboard = () => {
     </>
   );
   return (
-    <div className="drawer lg:drawer-open max-w-7xl mx-auto">
+    <div className="drawer lg:drawer-open mx-auto">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col">
+      <div className="drawer-content flex flex-col  min-h-screen">
         {/* Navbar */}
         <nav className="navbar w-full px-5 flex justify-between ">
           <div className="flex items-center">
@@ -116,7 +153,6 @@ const Dashboard = () => {
                       alt="User avatar"
                       src={
                         user?.photoURL ||
-                        user?.reloadUserInfo?.photoUrl ||
                         "https://i.ibb.co/0Qp1W33/default-avatar.png"
                       }
                     />
@@ -137,37 +173,43 @@ const Dashboard = () => {
                       <NavLink
                         to="/profile"
                         className={({ isActive }) =>
-                          `relative transition-all duration-300 group px-3 py-2 rounded font-bold ${
+                          `relative transition-all duration-300 group px-3 py-2 rounded font-bold hidden md:block ${
                             isActive ? "text-primary" : "hover:text-primary"
                           }`
                         }>
                         {({ isActive }) => (
-                          <>
+                          <div className="flex items-center gap-1">
+                            <div>
+                              <CgProfile />
+                            </div>
                             PROFILE
                             <span
                               className={`
             absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300
             ${isActive ? "w-full" : "w-0 group-hover:w-full"}
           `}></span>
-                          </>
+                          </div>
                         )}
                       </NavLink>
                       <NavLink
-                        to="/dashboard"
+                        to={`/dashboard/${userRole}`}
                         className={({ isActive }) =>
                           `relative transition-all duration-300 group px-3 py-2 rounded font-bold ${
                             isActive ? "text-primary" : "hover:text-primary"
                           }`
                         }>
                         {({ isActive }) => (
-                          <>
+                          <div className="flex items-center gap-1">
+                            <div>
+                              <MdOutlineDashboard />
+                            </div>
                             DASHBOARD
                             <span
                               className={`
             absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300
             ${isActive ? "w-full" : "w-0 group-hover:w-full"}
           `}></span>
-                          </>
+                          </div>
                         )}
                       </NavLink>
                     </div>
@@ -190,7 +232,7 @@ const Dashboard = () => {
           <Outlet></Outlet>
         </div>
         <div className="md:px-10">
-            <Footer></Footer>
+          <Footer></Footer>
         </div>
       </div>
 
@@ -203,8 +245,34 @@ const Dashboard = () => {
           {/* Sidebar content here */}
           <ul className="menu w-full grow">
             {/* List item */}
+            <div className="w-full px-3 py-3 border-b border-gray-200 mb-2">
+              <div className="is-drawer-close:tooltip is-drawer-close:tooltip-right">
+                <div className="flex items-center gap-2 ">
+                  <img src={logo} className=" my-1.5 inline-block size-4" />
+                  <h1 className="text-primary  text-xl font-bold neon-text is-drawer-close:hidden">
+                    Club
+                    <span className="text-secondary">Sphere</span>
+                  </h1>
+                </div>
+              </div>
+            </div>
+            {dashboardNavItems.map((item) => (
+              <li key={item.name}>
+                <Link
+                  to={item.path}
+                  className="is-drawer-close:tooltip is-drawer-close:tooltip-right "
+                  data-tip={item.name}>
+                  {/* Home icon */}
+                  <div className="flex items-center gap-1 my-1">
+                    <div className=" inline-block size-4 ">{item.icon}</div>
+                    <span className="is-drawer-close:hidden">{item.name}</span>
+                  </div>
+                </Link>
+              </li>
+            ))}
             <li>
-              <button
+              <Link
+                to="/dashboard"
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="Homepage">
                 {/* Home icon */}
@@ -221,31 +289,7 @@ const Dashboard = () => {
                   <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                 </svg>
                 <span className="is-drawer-close:hidden">Home</span>
-              </button>
-            </li>
-
-            {/* List item */}
-            <li>
-              <button
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Settings">
-                {/* Settings icon */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="2"
-                  fill="none"
-                  stroke="currentColor"
-                  className="my-1.5 inline-block size-4">
-                  <path d="M20 7h-9"></path>
-                  <path d="M14 17H5"></path>
-                  <circle cx="17" cy="17" r="3"></circle>
-                  <circle cx="7" cy="7" r="3"></circle>
-                </svg>
-                <span className="is-drawer-close:hidden">Settings</span>
-              </button>
+              </Link>
             </li>
           </ul>
         </div>

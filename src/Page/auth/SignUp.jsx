@@ -1,62 +1,78 @@
-import { AtSign, CheckCircle, Dot, Image, XCircle } from "lucide-react";
+import { AtSign, Image } from "lucide-react";
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import useAuth from "../../Hooks/useAuth";
 import image from "../../assets/art-sketch.png";
 import { useForm } from "react-hook-form";
+import PhotoInput from "../../Components/PhotoInput";
+import axios from "axios";
+import GoogleLogin from "./GoogleLogin";
+import useAxios from "../../Hooks/useAxios";
 
 const SignUp = () => {
-  const {
-    createUserWithEmailAndPasswordfunc,
-    signInWithGoogleFunc,
-    setUser,
-    updateProfileFunc,
-  } = useAuth();
-
-  const navigate = useNavigate();
-  const [show, setShow] = useState(true);
-
-  const handelGoogleSignup = (e) => {
-    e.preventDefault();
-    signInWithGoogleFunc()
-      .then((result) => {
-        toast.success("Sign up Succesful");
-
-        setUser(result.user);
-        navigate("/");
-      })
-      .catch((error) => {
-        const cleanMessage = error.code
-          .replace("auth/", "")
-          .replaceAll("-", " ");
-        toast.error(cleanMessage);
-      });
-  };
-
+  const { createUserWithEmailAndPasswordfunc, updateProfileFunc, setLoading } =
+    useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [show, setShow] = useState(true);
+  const axiosSecure = useAxios();
 
-  const signUp = (data) => {
-    console.log(data.email);
-     createUserWithEmailAndPasswordfunc(data.email, data.password)
-      .then(() => {
-        toast.success("Sign up Successful");
-        updateProfileFunc(data.displayName, data.photoURL).then(() => {});
-        navigate("/");
-      })
-      .catch((error) => {
-        const cleanMessage = error.code
-          .replace("auth/", "")
-          .replaceAll("-", " ");
-        toast.error(cleanMessage);
+  console.log(location.state);
+
+  const signUp = async (data) => {
+    try {
+      setLoading(true);
+      const profileImg = data.photo[0];
+
+      // 1️⃣ Create user
+      await createUserWithEmailAndPasswordfunc(data.email, data.password);
+      setLoading(true);
+      toast.success("Sign up Successful");
+
+      // 2️⃣ Upload profile image to imgbb
+      let photoURL = "";
+      if (profileImg) {
+        const formData = new FormData();
+        formData.append("image", profileImg);
+
+        const url = `https://api.imgbb.com/1/upload?key=${
+          import.meta.env.VITE_image_hosting_key
+        }`;
+
+        const res = await axios.post(url, formData);
+        photoURL = res.data.data.display_url;
+      }
+      const userInfo = {
+        name: data.displayName,
+        email: data.email,
+        photoURL: photoURL,
+        role: "member"
+      };
+
+      axiosSecure.post("/users", userInfo).then(() => {});
+
+      // 3️⃣ Update Firebase profile
+      await updateProfileFunc({
+        displayName: data.displayName,
+        photoURL,
       });
+      navigate(location.state || "/");
+    } catch (error) {
+      const cleanMessage = error.code
+        ? error.code.replace("auth/", "").replaceAll("-", " ")
+        : error.message;
+      toast.error(cleanMessage);
+    } finally {
+      setLoading(false);
+    }
   };
-
 
   return (
     <div className="flex flex-col lg:flex-row max-w-7xl mx-auto items-center px-4 py-4 pb-15 lg:pt-10">
@@ -72,16 +88,7 @@ const SignUp = () => {
               Welcome! Please Sign up to continue
             </p>
           </div>
-
-          <button
-            onClick={handelGoogleSignup}
-            type="button"
-            className="w-full  md:mt-2 bg-primary/10 flex items-center justify-center h-12 rounded-full hover:bg-primary/20 transition-colors">
-            <img
-              src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleLogo.svg"
-              alt="googleLogo"
-            />
-          </button>
+          <GoogleLogin />
 
           <div className="flex items-center gap-4 w-full my-5">
             <div className="w-full h-px bg-gray-300/90"></div>
@@ -110,19 +117,17 @@ const SignUp = () => {
                 </div>
               )}
             </div>
-
             <div className="relative w-full">
-              <div className="flex  items-center w-full bg-transparent border border-primary/60 h-12 rounded-full overflow-hidden px-4 gap-2">
-                <Image color="#FF5656" size={18} />
-                <input
-                  type=""
-                  {...register("photoURL", { required: true })}
-                  placeholder="Enter your Image link"
-                  className="bg-transparent placeholder-gray-500/80 outline-none text-sm w-full h-full"
-                />
+              <div className="">
+                <PhotoInput>
+                  <input
+                    className="file-input-bordered file-input-primary file-input w-full bg-transparent text-sm"
+                    type="file"
+                    {...register("photo", { required: true })}
+                  />
+                </PhotoInput>
               </div>
-              {/* Popup Error */}
-              {errors.photoURL && (
+              {errors.photo && (
                 <div className="absolute -top-5 mt-1 right-0 bg-red-500 text-white text-xs px-3 py-1 rounded shadow-lg animate-fadeIn">
                   Photo is Required
                 </div>
@@ -212,13 +217,14 @@ const SignUp = () => {
 
           <button
             type="submit"
-            className="mt-6 bg-hover md:mt-8 w-full h-12 rounded-full text-white bg-primary hover:opacity-90 transition-opacity font-medium">
+            className="btn mt-6 bg-hover md:mt-8 w-full h-12 rounded-full text-white bg-primary hover:opacity-90 transition-opacity font-medium">
             Sign up
           </button>
 
           <p className="text-gray-500/90 text-sm mt-4 text-center">
             Already Have an account?{" "}
             <Link
+              state={location.state}
               to="/login"
               className="text-primary hover:underline font-medium">
               Login

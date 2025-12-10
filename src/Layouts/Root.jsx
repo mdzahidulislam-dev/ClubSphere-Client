@@ -6,19 +6,18 @@ import Loader from "../Components/Loader";
 import useAuth from "../Hooks/useAuth";
 
 const Root = () => {
-  const {loading, setLoading} = useAuth();
+  const { loading, setLoading, user } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
-
     setLoading(true);
 
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [location, setLoading]);
+    if (user) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+    }
+  }, [location, setLoading, user]);
 
   return (
     <>
