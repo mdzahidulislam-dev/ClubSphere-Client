@@ -48,8 +48,6 @@ const Navbar = () => {
     setUserRole(res.data.role);
   });
 
-console.log(user);
-
   const navItem = (
     <>
       {navItems.map((item) => (

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import {
   MagnifyingGlassIcon,
@@ -8,6 +8,8 @@ import {
 import { PencilIcon } from "@heroicons/react/24/solid";
 import useAxios from "../../../../Hooks/useAxios";
 import Loader from "../../../../Components/Loader";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const TABS = [
   {
@@ -30,52 +32,64 @@ const TABS = [
 
 const TABLE_HEAD = ["Member", "Role", "Created At", "Actions"];
 
-const TABLE_ROWS = [
-  {
-    img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
-    name: "John Michael",
-    email: "john@creative-tim.com",
-    job: "Manager",
-    org: "Organization",
-    online: true,
-    date: "23/04/18",
-  },
-  {
-    img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
-    name: "Alexa Liras",
-    email: "alexa@creative-tim.com",
-    job: "Programator",
-    org: "Developer",
-    online: false,
-    date: "23/04/18",
-  },
-  {
-    img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
-    name: "Laurent Perrier",
-    email: "laurent@creative-tim.com",
-    job: "Executive",
-    org: "Projects",
-    online: false,
-    date: "19/09/17",
-  },
-];
-
 export default function ManageUsers() {
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const queryClient = useQueryClient();
   const axiosSecure = useAxios();
 
-  const {data: users=[], isLoading} = useQuery({
+  const roles = ["admin", "manager", "member"];
+
+  const { data: users = [], isLoading } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-
       const res = await axiosSecure.get("/users");
       return res.data;
     },
-  })
-  if(isLoading)return <Loader></Loader>
+  });
+  if (isLoading) return <Loader></Loader>;
   console.log(users);
-  
+
+  //  Role update
+  const handleRoleChange = async (userId, newRole, currentRole) => {
+    if (newRole === currentRole) return;
+    Swal.fire({
+      title: "Are you sure?",
+      text: `You want to change role from "${currentRole}" to "${newRole}"?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#FF5656",
+      cancelButtonColor: "#FFA239",
+      confirmButtonText: "Yes, Change it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axiosSecure.patch(`/users/${userId}`, { role: newRole });
+          toast.success(`Role changed to ${newRole}`);
+          // refresh users
+          queryClient.invalidateQueries(["users"]);
+        } catch (error) {
+          toast.error("Failed to update role");
+          console.error(error);
+        }
+        Swal.fire({
+          title: "Changed!",
+          text: `The "${currentRole}" has been changed to "${newRole}"!!!`,
+          icon: "success",
+        });
+      }
+    });
+
+    if (!confirm) return;
+  };
+
+  const filteredUsers = users
+    .filter((user) => activeTab === "all" || user.role === activeTab)
+    .filter(
+      (user) =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   return (
     <div className="h-full w-full bg-white rounded-lg ">
@@ -148,70 +162,92 @@ export default function ManageUsers() {
             </tr>
           </thead>
           <tbody>
-            {TABLE_ROWS.map(({ img, name, email, job, org, date }, index) => {
-              const isLast = index === TABLE_ROWS.length - 1;
-              const classes = isLast
-                ? "p-4 "
-                : "p-4 border-b border-primary/20";
+            {filteredUsers.map(
+              ({ photoURL, name, email, role, createdDate, _id }, index) => {
+                const isLast = index === users.length - 1;
+                const classes = isLast
+                  ? "p-4 "
+                  : "p-4 border-b border-primary/20";
 
-              return (
-                <tr key={name} className="hover:bg-gray-50 transition-colors">
-                  {/* Member */}
-                  <td className={classes}>
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={img}
-                        alt={name}
-                        className="h-10 w-10 rounded-full object-cover"
-                      />
+                return (
+                  <tr
+                    key={index}
+                    className="hover:bg-gray-50 transition-colors">
+                    <td className={classes}>
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={photoURL}
+                          alt={name}
+                          className="h-10 w-10 rounded-full object-cover"
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-sm font-normal text-gray-900">
+                            {name}
+                          </span>
+                          <span className="text-sm font-normal text-gray-500">
+                            {email}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className={classes}>
                       <div className="flex flex-col">
                         <span className="text-sm font-normal text-gray-900">
-                          {name}
-                        </span>
-                        <span className="text-sm font-normal text-gray-500">
-                          {email}
+                          {role}
                         </span>
                       </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Function */}
-                  <td className={classes}>
-                    <div className="flex flex-col">
+                    <td className={classes}>
                       <span className="text-sm font-normal text-gray-900">
-                        {job}
+                        {createdDate}
                       </span>
-                      <span className="text-sm font-normal text-gray-500">
-                        {org}
-                      </span>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Employed */}
-                  <td className={classes}>
-                    <span className="text-sm font-normal text-gray-900">
-                      {date}
-                    </span>
-                  </td>
-
-                  {/* Actions */}
-                  <td className={classes}>
-                    <button
-                      className="p-2 text-primary
-                      bg-primary/10  hover:bg-primary/20 rounded-full transition-colors mr-2"
-                      title="Edit User">
-                      <PencilIcon className="h-4 w-4" />
-                    </button>
-                    <button
-                      className="p-2 text-primary
+                    {/* Actions */}
+                    <td className={classes}>
+                      <div className="flex items-center">
+                        <div className="dropdown dropdown-left ">
+                          <div
+                            tabIndex={0}
+                            role="button"
+                            className=" mr-2 rounded-full   bg-primary/10 hover:bg-primary/20 text-primary btn-sm p-2">
+                            <PencilIcon className="h-4 w-4" />
+                          </div>
+                          <ul
+                            tabIndex="-1"
+                            className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                            {roles.map((item) => (
+                              <li key={item}>
+                                <button
+                                  type="button"
+                                  className={`capitalize ${
+                                    role === item
+                                      ? "font-bold text-primary"
+                                      : ""
+                                  }`}
+                                  onClick={() =>
+                                    handleRoleChange(_id, item, role)
+                                  }>
+                                  {item}
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <button
+                          className="p-2 text-primary
                       bg-primary/10  hover:bg-primary/20 rounded-full transition-colors"
-                      title="Delete User">
-                      <RiDeleteBin6Fill className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+                          title="Delete User">
+                          <RiDeleteBin6Fill className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              }
+            )}
           </tbody>
         </table>
       </div>
