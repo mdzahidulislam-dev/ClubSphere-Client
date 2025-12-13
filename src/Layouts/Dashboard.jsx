@@ -61,18 +61,18 @@ const Dashboard = () => {
       items.push(
         {
           name: "Manage Users",
-          path: "/dashboard/admin/manage-users",
+          path: "admin/manage-users",
           icon: <FaUsersGear />,
         },
         {
           name: "Manage Clubs",
-          path: "/dashboard/admin/manage-clubs",
+          path: "admin/manage-clubs",
           icon: <MdOutlineManageAccounts />,
         },
         {
           name: "View Payments",
-          path: "/dashboard/admin/view-payments",
-          icon: <MdOutlinePayments />
+          path: "admin/view-payments",
+          icon: <MdOutlinePayments />,
         }
       );
     } else if (userRole === "manager") {
@@ -85,17 +85,17 @@ const Dashboard = () => {
         {
           name: "Club Members",
           path: "/dashboard/manager/club-members",
-          icon: <RiTeamLine />
+          icon: <RiTeamLine />,
         },
         {
           name: "Events Management",
           path: "/dashboard/manager/events-management",
-          icon: <MdEventNote />
+          icon: <MdEventNote />,
         },
         {
           name: "Event Registrations",
           path: "/dashboard/manager/event-registrations",
-          icon: <MdEventAvailable />
+          icon: <MdEventAvailable />,
         }
       );
     } else if (userRole === "member") {
@@ -103,7 +103,7 @@ const Dashboard = () => {
         {
           name: "My Clubs",
           path: "/dashboard/member/my-clubs",
-          icon: <FaUsers />
+          icon: <FaUsers />,
         },
         {
           name: "My Events",
@@ -113,7 +113,7 @@ const Dashboard = () => {
         {
           name: "Payment History",
           path: "/dashboard/member/payment-history",
-          icon: <MdOutlinePayments />
+          icon: <MdOutlinePayments />,
         }
       );
     }
@@ -317,16 +317,18 @@ const Dashboard = () => {
             </div>
             {dashboardNavItems.map((item) => (
               <li key={item.name}>
-                <Link
+                <NavLink
                   to={item.path}
-                  className="is-drawer-close:tooltip is-drawer-close:tooltip-right "
+                  end
+                  className={({ isActive }) =>
+                    `is-drawer-close:tooltip is-drawer-close:tooltip-right
+         flex items-center gap-1 my-1 px-3 py-2 rounded transition
+         ${isActive ? "bg-primary text-white" : "hover:bg-primary/10"}`
+                  }
                   data-tip={item.name}>
-                  {/* Home icon */}
-                  <div className="flex items-center gap-1 my-1">
-                    <div className=" inline-block size-4 ">{item.icon}</div>
-                    <span className="is-drawer-close:hidden">{item.name}</span>
-                  </div>
-                </Link>
+                  <div className="inline-block size-4">{item.icon}</div>
+                  <span className="is-drawer-close:hidden">{item.name}</span>
+                </NavLink>
               </li>
             ))}
           </ul>

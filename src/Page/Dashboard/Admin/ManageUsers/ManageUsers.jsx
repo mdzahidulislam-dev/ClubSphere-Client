@@ -143,8 +143,8 @@ export default function ManageUsers() {
       </div>
 
       {/* Table */}
-      <div className=" px-0">
-        <table className="w-full min-w-max table-auto text-left">
+      <div className="overflow-x-auto px-0">
+        <table className="w-full min-w-max table-auto text-left mb-6">
           <thead>
             <tr>
               {TABLE_HEAD.map((head, index) => (

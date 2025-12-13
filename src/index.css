@@ -7,8 +7,17 @@
     name: "light";
     default: true;
     --color-primary: #FF5656;
-    --color-secondary:#FFA239;
+    --color-secondary:#ff7b00;
 }
 .bg-hover:hover{
     background-color: #ec3a3a;
+}
+.bg-third{
+    background: #da4848;
+}
+.bg-forth{
+    background: #af4040;
+}
+.caatwes{
+    background: #e03a3a;
 }

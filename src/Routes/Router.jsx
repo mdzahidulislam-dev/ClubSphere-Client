@@ -77,19 +77,19 @@ export const router = createBrowserRouter([
     children: [
       //admin routes
       {
-        path: "/dashboard/admin",
+        path: "admin",
         element: <AdminOverview></AdminOverview>,
       },
       {
-        path: "/dashboard/admin/manage-users",
+        path: "admin/manage-users",
         element: <ManageUsers></ManageUsers>,
       },
       {
-        path: "/dashboard/admin/manage-clubs",
+        path: "admin/manage-clubs",
         element: <ManageClubs></ManageClubs>,
       },
       {
-        path: "/dashboard/admin/view-payments",
+        path: "admin/view-payments",
         element: <ViewPayments></ViewPayments>,
       },
 
