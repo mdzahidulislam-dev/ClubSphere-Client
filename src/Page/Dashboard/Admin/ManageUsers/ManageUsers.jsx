@@ -143,7 +143,7 @@ export default function ManageUsers() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto px-0">
+      <div className=" px-0">
         <table className="w-full min-w-max table-auto text-left">
           <thead>
             <tr>
@@ -161,92 +161,103 @@ export default function ManageUsers() {
               ))}
             </tr>
           </thead>
-          <tbody>
-            {filteredUsers.map(
-              ({ photoURL, name, email, role, createdDate, _id }, index) => {
-                const isLast = index === users.length - 1;
-                const classes = isLast
-                  ? "p-4 "
-                  : "p-4 border-b border-primary/20";
 
-                return (
-                  <tr
-                    key={index}
-                    className="hover:bg-gray-50 transition-colors">
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={photoURL}
-                          alt={name}
-                          className="h-10 w-10 rounded-full object-cover"
-                        />
+          <tbody>
+            {filteredUsers.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={TABLE_HEAD.length}
+                  className="text-center py-10 text-2xl text-primary/50 font-bold">
+                  No User Found
+                </td>
+              </tr>
+            ) : (
+              filteredUsers.map(
+                ({ photoURL, name, email, role, createdDate, _id }, index) => {
+                  const isLast = index === users.length - 1;
+                  const classes = isLast
+                    ? "p-4 "
+                    : "p-4 border-b border-primary/20";
+
+                  return (
+                    <tr
+                      key={index}
+                      className="hover:bg-gray-50 transition-colors">
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={photoURL}
+                            alt={name}
+                            className="h-10 w-10 rounded-full object-cover"
+                          />
+                          <div className="flex flex-col">
+                            <span className="text-sm font-normal text-gray-900">
+                              {name}
+                            </span>
+                            <span className="text-sm font-normal text-gray-500">
+                              {email}
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className={classes}>
                         <div className="flex flex-col">
                           <span className="text-sm font-normal text-gray-900">
-                            {name}
-                          </span>
-                          <span className="text-sm font-normal text-gray-500">
-                            {email}
+                            {role}
                           </span>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    <td className={classes}>
-                      <div className="flex flex-col">
+                      <td className={classes}>
                         <span className="text-sm font-normal text-gray-900">
-                          {role}
+                          {createdDate}
                         </span>
-                      </div>
-                    </td>
+                      </td>
 
-                    <td className={classes}>
-                      <span className="text-sm font-normal text-gray-900">
-                        {createdDate}
-                      </span>
-                    </td>
-
-                    {/* Actions */}
-                    <td className={classes}>
-                      <div className="flex items-center">
-                        <div className="dropdown dropdown-left ">
-                          <div
-                            tabIndex={0}
-                            role="button"
-                            className=" mr-2 rounded-full   bg-primary/10 hover:bg-primary/20 text-primary btn-sm p-2">
-                            <PencilIcon className="h-4 w-4" />
+                      {/* Actions */}
+                      <td className={classes}>
+                        <div className="flex items-center">
+                          <div className="dropdown dropdown-center dropdown-left ">
+                            <div
+                              tabIndex={0}
+                              role="button"
+                              className=" mr-2 rounded-full   bg-primary/10 hover:bg-primary/20 text-primary btn-sm p-2">
+                              <PencilIcon className="h-4 w-4" />
+                            </div>
+                            <ul
+                              tabIndex="-1"
+                              className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                              {roles.map((item) => (
+                                <li key={item}>
+                                  <button
+                                    type="button"
+                                    className={`capitalize ${
+                                      role === item
+                                        ? "font-bold text-primary"
+                                        : ""
+                                    }`}
+                                    onClick={() =>
+                                      handleRoleChange(_id, item, role)
+                                    }>
+                                    {item}
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
                           </div>
-                          <ul
-                            tabIndex="-1"
-                            className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                            {roles.map((item) => (
-                              <li key={item}>
-                                <button
-                                  type="button"
-                                  className={`capitalize ${
-                                    role === item
-                                      ? "font-bold text-primary"
-                                      : ""
-                                  }`}
-                                  onClick={() =>
-                                    handleRoleChange(_id, item, role)
-                                  }>
-                                  {item}
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        <button
-                          className="p-2 text-primary
+                          <button
+                            className="p-2 text-primary
                       bg-primary/10  hover:bg-primary/20 rounded-full transition-colors"
-                          title="Delete User">
-                          <RiDeleteBin6Fill className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              }
+                            title="Delete User">
+                            <RiDeleteBin6Fill className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                }
+              )
             )}
           </tbody>
         </table>
