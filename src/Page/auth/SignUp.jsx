@@ -21,10 +21,16 @@ const SignUp = () => {
   } = useForm();
   const navigate = useNavigate();
   const location = useLocation();
+  const [preview, setPreview] = useState(null);
   const [show, setShow] = useState(true);
   const axiosSecure = useAxios();
 
-  console.log(location.state);
+  const handleImagePreview = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    }
+  };
 
   const signUp = async (data) => {
     try {
@@ -41,7 +47,9 @@ const SignUp = () => {
         const formData = new FormData();
         formData.append("image", profileImg);
 
-        const url = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_hosting_key}`;
+        const url = `https://api.imgbb.com/1/upload?key=${
+          import.meta.env.VITE_image_hosting_key
+        }`;
         const res = await axios.post(url, formData);
         photoURL = res.data.data.display_url;
       }
@@ -65,7 +73,7 @@ const SignUp = () => {
         displayName: data.displayName,
         photoURL,
       });
-      
+
       navigate(location.state || "/");
     } catch (error) {
       const cleanMessage = error.code
@@ -122,11 +130,13 @@ const SignUp = () => {
             </div>
             <div className="relative w-full">
               <div className="">
-                <PhotoInput>
+                <PhotoInput preview={preview}>
                   <input
                     className="file-input-bordered file-input-primary file-input w-full bg-transparent text-sm"
                     type="file"
+                    accept="image/*"
                     {...register("photo", { required: true })}
+                     onChange={handleImagePreview}
                   />
                 </PhotoInput>
               </div>

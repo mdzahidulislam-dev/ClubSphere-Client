@@ -9,15 +9,24 @@ import PhotoInput from "../../Components/PhotoInput";
 import axios from "axios";
 import useAxios from "../../Hooks/useAxios";
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 const Profile = () => {
   const { user, setLoading, updateProfileFunc } = useAuth();
+  const [preview, setPreview] = useState(null);
   const axiosSecure = useAxios();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  
+  const handleImagePreview = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    }
+  };
 
   const updateInfo = async (data) => {
     try {
@@ -124,11 +133,13 @@ const Profile = () => {
             className="w-full max-w-md md:w-96 flex flex-col">
             <div className="w-full space-y-6">
               <div className="relative w-full">
-                <PhotoInput>
+                <PhotoInput preview={preview}>
                   <input
                     className="file-input-bordered file-input-primary file-input w-full bg-transparent text-sm"
                     type="file"
+                    accept="image/*"
                     {...register("photo")}
+                    onChange={handleImagePreview}
                   />
                 </PhotoInput>
               </div>

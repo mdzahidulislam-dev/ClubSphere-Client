@@ -1,10 +1,13 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Calendar, Edit, MapPin, MoreVertical, Trash2 } from "lucide-react";
-import React from "react";
+import {  Edit, MapPin, MoreVertical, Trash2 } from "lucide-react";
+import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { IoIosArrowDropdownCircle, IoIosCalendar } from "react-icons/io";
+import { IoIosArrowDropdownCircle } from "react-icons/io";
+import CreateNewClub from "../../../../Components/CreateNewClub";
+import { FaMoneyBills } from "react-icons/fa6";
 
 const MyClubs = () => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className=" relative">
       {/* Mobile Header Placeholder (visible only on small screens) */}
@@ -21,10 +24,20 @@ const MyClubs = () => {
                 all in one place.
               </p>
             </div>
-            <button className="md:absolute right-0 top-0 flex items-center w-full md:w-fit md:-mt-5 lg:mt-0 mt-5 gap-2 rounded-xl btn p-6  bg-primary hover:bg-hover text-sm font-bold shadow-lg shadow-primary/20 transition-all text-white transform hover:scale-[1.02] active:scale-[0.98]">
+            <button
+              onClick={() => setIsOpen(true)}
+              className="md:absolute right-0 top-0 flex items-center w-full md:w-fit md:-mt-5 lg:mt-0 mt-5 gap-2 rounded-xl btn p-6  bg-primary hover:bg-hover text-sm font-bold shadow-lg shadow-primary/20 transition-all text-white transform hover:scale-[1.02] active:scale-[0.98]">
               <FaPlus />
               <span>Create New Club</span>
             </button>
+         
+            {isOpen && (
+              <div className="fixed inset-0 z-999 flex items-center justify-center bg-black/50">
+                <div className="bg-white rounded-xl p-6 w-11/12 max-w-5xl h-11/12 overflow-y-auto relative">
+                  <CreateNewClub closeModal={() => setIsOpen(false)} />
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -100,7 +113,7 @@ const MyClubs = () => {
                     <span className="font-medium">San Diego, CA</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-gray-300">
-                    <IoIosCalendar size={16} />
+                    <FaMoneyBills size={16} />
                     <span className="font-medium">$120/mo</span>
                   </div>
                 </div>
