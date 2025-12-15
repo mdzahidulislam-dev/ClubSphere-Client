@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { FaPlus } from "react-icons/fa";
+import { GrDocumentUpdate } from "react-icons/gr";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { MdFeed, MdOutlineAttachMoney } from "react-icons/md";
@@ -11,7 +11,7 @@ import useAxios from "../Hooks/useAxios";
 import useAuth from "../Hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
 
-const CreateNewClub = ({ closeModal }) => {
+const EditClub = ({ closeModal, selectedClub }) => {
   const [imgPreview, setImgPreview] = useState("");
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,6 +35,24 @@ const CreateNewClub = ({ closeModal }) => {
     },
   });
 
+  useEffect(() => {
+    if (selectedClub) {
+      reset({
+        clubName: selectedClub.clubName || "",
+        category: selectedClub.category || "",
+        description: selectedClub.description || "",
+        location: selectedClub.location || "",
+        membershipFee: selectedClub.membershipFee || "0",
+        bannerImage: null,
+      });
+
+      // bannerImage
+      if (selectedClub.bannerImage) {
+        setImgPreview(selectedClub.bannerImage);
+      }
+    }
+  }, [selectedClub, reset]);
+
   const description = useWatch({
     control,
     name: "description",
@@ -54,16 +72,16 @@ const CreateNewClub = ({ closeModal }) => {
     }
   }, [bannerImage]);
 
-  const createClub = async (data) => {
+  const UpdateClub = async (data) => {
     console.log(data);
 
     try {
       setIsSubmitting(true);
-      let clubImg = data?.bannerImage?.[0];
+      let clubImg = selectedClub.bannerImage;
 
-      if (clubImg) {
+      if (data?.bannerImage?.length > 0) {
         const formData = new FormData();
-        formData.append("image", clubImg);
+        formData.append("image", data.bannerImage[0]);
 
         const url = `https://api.imgbb.com/1/upload?key=${
           import.meta.env.VITE_image_hosting_key
@@ -72,20 +90,19 @@ const CreateNewClub = ({ closeModal }) => {
         clubImg = res.data.data.display_url;
       }
       data.bannerImage = clubImg;
-      data.status = "pending";
       data.managerEmail = user.email;
-      data.createdAt = new Date().toISOString();
-      data.createdDate = new Date().toLocaleDateString("en-GB");
-      data.createdTime = new Date().toLocaleTimeString("en-GB", {
+      data.UpdateAt = new Date().toISOString();
+      data.UpdateDate = new Date().toLocaleDateString("en-GB");
+      data.UpdateTime = new Date().toLocaleTimeString("en-GB", {
         hour: "2-digit",
         minute: "2-digit",
       });
-      await axiosSecure.post("/clubs", data);
+      await axiosSecure.patch(`/clubs/${selectedClub._id}`, data);
       queryClient.invalidateQueries(["myClubs", user?.email]);
       // Success message
       Swal.fire({
         title: "Success!",
-        text: "Club created successfully!",
+        text: "Club Updated successfully!",
         icon: "success",
         confirmButtonText: "OK",
       });
@@ -94,10 +111,10 @@ const CreateNewClub = ({ closeModal }) => {
       reset();
       closeModal();
     } catch (error) {
-      console.error("Error creating club:", error);
+      console.error("Error Update club:", error);
       Swal.fire({
         title: "Error!",
-        text: "Failed to create club. Please try again.",
+        text: "Failed to Update club. Please try again.",
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -130,19 +147,19 @@ const CreateNewClub = ({ closeModal }) => {
           {/* Page Heading */}
           <div className="flex flex-col gap-2 text-center">
             <h1 className="text-primary text-3xl md:text-4xl font-bold leading-tight tracking-[-0.033em]">
-              Create a New Club
+              Update Your Club Info
             </h1>
 
             <p className="text-secondary text-base font-normal leading-normal md:mx-20">
-              Fill in the details below to launch your new community space.
-              Managers can update these details later from the club settings.
+              Update your club information here so members always see the latest
+              details. Make changes anytime you need.
             </p>
           </div>
 
           {/* Form Container */}
           <div className="bg-surface-dark/30 border border-primary/50 rounded-xl p-6 md:p-8 shadow-xl ">
             <form
-              onSubmit={handleSubmit(createClub)}
+              onSubmit={handleSubmit(UpdateClub)}
               className="flex flex-col gap-8">
               <div className="flex flex-col gap-6">
                 <div className="border-b border-primary/50 pb-2">
@@ -199,10 +216,6 @@ const CreateNewClub = ({ closeModal }) => {
                         <option value="social">Social & Networking</option>
                         <option value="gaming">Gaming</option>
                         <option value="photography">Photography</option>
-                        <option value="literature">Literature</option>
-                        <option value="travel">Travel</option>
-                        <option value="entertainment">Entertainment</option>
-                        <option value="business">Business</option>
                       </select>
                       <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
                         <IoIosArrowDropdownCircle />
@@ -372,8 +385,14 @@ const CreateNewClub = ({ closeModal }) => {
                         id="dropzone-file"
                         type="file"
                         accept="image/*"
+                        // {...register("bannerImage", {
+                        //   required: "Banner image is required",
+                        // })}
                         {...register("bannerImage", {
-                          required: "Banner image is required",
+                          validate: (fileList) => {
+                            if (!fileList || fileList.length === 0) return true;
+                            return true;
+                          },
                         })}
                       />
                       {errors.bannerImage && (
@@ -402,14 +421,14 @@ const CreateNewClub = ({ closeModal }) => {
                   {isSubmitting ? (
                     <>
                       <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></span>
-                      Creating...
+                      Updating...
                     </>
                   ) : (
                     <>
                       <span className="material-symbols-outlined text-[20px]">
-                        <FaPlus />
+                        <GrDocumentUpdate />
                       </span>
-                      Create Club
+                      Update
                     </>
                   )}
                 </button>
@@ -422,4 +441,4 @@ const CreateNewClub = ({ closeModal }) => {
   );
 };
 
-export default CreateNewClub;
+export default EditClub;
