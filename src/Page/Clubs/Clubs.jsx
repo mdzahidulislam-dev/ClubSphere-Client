@@ -1,5 +1,5 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { MapPin, MoreVertical } from "lucide-react";
+import {  MapPin, MoreVertical } from "lucide-react";
 import React, { useState } from "react";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { FaMoneyBills } from "react-icons/fa6";
@@ -7,6 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../Hooks/useAxios";
 import useAuth from "../../Hooks/useAuth";
 import Loader from "../../Components/Loader";
+import { MdOutlinePageview } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const Clubs = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -232,7 +234,10 @@ const Clubs = () => {
 
                       {/* Action Buttons at Bottom */}
                       <div className="flex gap-3 mt-auto">
-                        <button></button>
+                        <Link to={`/club-details/${club._id}`} className="flex-1 flex items-center justify-center gap-2 bg-forth text-white py-2.5 rounded-lg font-medium">
+                          <MdOutlinePageview size={18} />
+                          view Details
+                        </Link>
                       </div>
                     </div>
                   </div>

@@ -11,6 +11,8 @@ import useAuth from "../../../../Hooks/useAuth";
 import Loader from "../../../../Components/Loader";
 import Swal from "sweetalert2";
 import EditClub from "../../../../Components/EditClub";
+import { TbEyeSearch } from "react-icons/tb";
+import { Link } from "react-router-dom";
 
 const MyClubs = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -274,6 +276,11 @@ const MyClubs = () => {
                           className="flex items-center justify-center bg-forth text-white px-4 py-2.5 rounded-lg transition-colors">
                           <Trash2 size={18} />
                         </button>
+                        <Link
+                          to={`/dashboard/manager/club-details/${club._id}`}
+                          className="flex items-center justify-center bg-forth text-white px-4 py-2.5 rounded-lg transition-colors">
+                          <TbEyeSearch size={18} />
+                        </Link>
                       </div>
                     </div>
                   </div>

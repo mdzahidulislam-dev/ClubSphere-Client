@@ -167,7 +167,8 @@ const Dashboard = () => {
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col  min-h-screen">
         {/* Navbar */}
-        <nav className="navbar w-full px-5 flex justify-between ">
+        <nav className="navbar w-full px-5 flex justify-between z-1 fixed top-0 bg-white">
+          
           <div className="flex items-center">
             <label
               htmlFor="my-drawer-4"
@@ -203,7 +204,7 @@ const Dashboard = () => {
           <div className="hidden md:flex items-center space-x-6 text-secondary">
             {navItem}
           </div>
-          <div className="md:mr-8">
+          <div className="md:mr-8 lg:pr-15">
             {user && (
               <div className=" ml-4 dropdown dropdown-end">
                 <div tabIndex={0} className="btn btn-ghost btn-circle avatar">
@@ -220,7 +221,7 @@ const Dashboard = () => {
 
                 <ul
                   tabIndex={0}
-                  className="dropdown-content menu p-4 backdrop-blur rounded-lg text-white w-56 bg-secondary/20">
+                  className="dropdown-content menu p-4 backdrop-blur rounded-lg text-black w-56 bg-white/50">
                   <h3 className="font-bold text-black">{user?.displayName}</h3>
                   <p className="text-xs mb-2 text-gray-600">{user?.email}</p>
 
@@ -287,7 +288,7 @@ const Dashboard = () => {
           </div>
         </nav>
         {/* Page content here */}
-        <div className="flex-1 mx-10 my-10 bg-white shadow-xl rounded-lg p-5">
+        <div className="flex-1 mx-10 my-10 mt-25 bg-white shadow-xl rounded-lg p-5">
           <Outlet></Outlet>
         </div>
         <div className="md:px-10">
