@@ -167,8 +167,7 @@ const Dashboard = () => {
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col  min-h-screen">
         {/* Navbar */}
-        <nav className="navbar w-full px-5 flex justify-between z-1 fixed top-0 bg-white">
-          
+        <nav className="navbar w-full px-5 flex justify-between z-1 fixed top-0 bg-white shadow ">
           <div className="flex items-center">
             <label
               htmlFor="my-drawer-4"
@@ -204,7 +203,7 @@ const Dashboard = () => {
           <div className="hidden md:flex items-center space-x-6 text-secondary">
             {navItem}
           </div>
-          <div className="md:mr-8 lg:pr-15">
+          <div className="md:mr-5 lg:pr-15">
             {user && (
               <div className=" ml-4 dropdown dropdown-end">
                 <div tabIndex={0} className="btn btn-ghost btn-circle avatar">
@@ -305,7 +304,7 @@ const Dashboard = () => {
           {/* Sidebar content here */}
           <ul className="menu w-full grow">
             {/* List item */}
-            <div className="w-full px-3 py-3 border-b border-gray-200 mb-2">
+            <div className="w-full px-3 py-3.5 border-b border-gray-200 mb-2">
               <div className="is-drawer-close:tooltip is-drawer-close:tooltip-right">
                 <div className="flex items-center gap-2 ">
                   <img src={logo} className=" my-1.5 inline-block size-4" />

@@ -36,6 +36,8 @@ export default function ManageUsers() {
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const queryClient = useQueryClient();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10
   const axiosSecure = useAxios();
 
   const roles = ["admin", "manager", "member"];
@@ -47,8 +49,8 @@ export default function ManageUsers() {
       return res.data;
     },
   });
+
   if (isLoading) return <Loader></Loader>;
-  console.log(users);
 
   //  Role update
   const handleRoleChange = async (userId, newRole, currentRole) => {
@@ -65,7 +67,6 @@ export default function ManageUsers() {
       if (result.isConfirmed) {
         try {
           await axiosSecure.patch(`/users/${userId}`, { role: newRole });
-          toast.success(`Role changed to ${newRole}`);
           // refresh users
           queryClient.invalidateQueries(["users"]);
         } catch (error) {
@@ -83,13 +84,29 @@ export default function ManageUsers() {
     if (!confirm) return;
   };
 
-  const filteredUsers = users
-    .filter((user) => activeTab === "all" || user.role === activeTab)
-    .filter(
-      (user) =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  // Filter users
+  const filteredUsers = users.filter((user) => {
+    const normalizedSearch = searchTerm
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "");
+
+    const matchesSearch =
+      user.name?.toLowerCase().replace(/\s+/g, "").includes(normalizedSearch) ||
+      user.email?.toLowerCase().replace(/\s+/g, "").includes(normalizedSearch);
+
+    const matchesRole = activeTab === "all" ? true : user.role === activeTab;
+
+    return matchesSearch && matchesRole;
+  });
+
+  // Pagination
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="h-full w-full bg-white rounded-lg ">
@@ -97,7 +114,7 @@ export default function ManageUsers() {
       <div className="py-6 text-center">
         <div className="mb-8  ">
           <h5 className="text-4xl font-semibold text-primary">
-            All Members list
+            All Members list <span className="text-lg">({users.length})</span>
           </h5>
           <p className="text-secondary mt-1 font-normal">
             See information about all members
@@ -117,7 +134,9 @@ export default function ManageUsers() {
                       ? "text-primary border-b-2 border-primary"
                       : "text-gray-500 hover:text-primary"
                   }`}
-                  onClick={() => setActiveTab(value)}>
+                  onClick={() => {
+                    setActiveTab(value), setCurrentPage(1);
+                  }}>
                   {label}
                 </button>
               ))}
@@ -135,7 +154,10 @@ export default function ManageUsers() {
                 className="w-full pl-10 pr-3 py-2 border border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="Search"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
               />
             </div>
           </div>
@@ -172,7 +194,7 @@ export default function ManageUsers() {
                 </td>
               </tr>
             ) : (
-              filteredUsers.map(
+              paginatedUsers.map(
                 ({ photoURL, name, email, role, createdDate, _id }, index) => {
                   const isLast = index === users.length - 1;
                   const classes = isLast
@@ -266,13 +288,29 @@ export default function ManageUsers() {
       {/* Footer */}
       <div className="flex flex-col sm:flex-row items-center justify-between border-t border-primary/20 p-4">
         <span className="text-sm font-normal text-primary mb-2 sm:mb-0">
-          Page 1 of 10
+          Page {currentPage} of {totalPages || 1}
         </span>
+
         <div className="flex gap-2">
-          <button className="px-4 py-2 text-sm border border-primary rounded-md text-primary hover:bg-primary hover:text-white transition-colors">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            className={`px-4 py-2 text-sm border rounded-md transition-colors ${
+              currentPage === 1
+                ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                : "border-primary text-primary hover:bg-primary hover:text-white"
+            }`}>
             Previous
           </button>
-          <button className="px-4 py-2 text-sm border border-primary rounded-md text-primary hover:bg-primary hover:text-white transition-colors">
+
+          <button
+            disabled={currentPage === totalPages || totalPages === 0}
+            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            className={`px-4 py-2 text-sm border rounded-md transition-colors ${
+              currentPage === totalPages || totalPages === 0
+                ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                : "border-primary text-primary hover:bg-primary hover:text-white"
+            }`}>
             Next
           </button>
         </div>
