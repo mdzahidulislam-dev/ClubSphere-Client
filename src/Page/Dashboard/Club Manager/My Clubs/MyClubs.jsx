@@ -100,6 +100,16 @@ const MyClubs = () => {
     });
   };
 
+  const approvedClubs = filteredClubs.filter(
+    (c) => c.status === "approved"
+  ).length;
+  const rejectedClubs = filteredClubs.filter(
+    (c) => c.status === "rejected"
+  ).length;
+  const pendingClubs = filteredClubs.filter(
+    (c) => c.status === "pending"
+  ).length;
+
   return (
     <div className=" relative">
       <div className=" mx-auto  px-4 py-6 md:px-8 md:py-10 flex flex-col gap-8">
@@ -108,7 +118,6 @@ const MyClubs = () => {
             <div className="flex flex-col gap-2 text-center">
               <h1 className="text-4xl md:text-4xl font-semibold text-primary">
                 My Clubs
-                <span className="text-lg">({filteredClubs.length})</span>
               </h1>
               <p className=" text-secondary">
                 Manage your clubs, update details and monitor membership status
@@ -129,6 +138,39 @@ const MyClubs = () => {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 mt-5 text-center lg:px-10 md:px-5">
+          {/* Total Clubs */}
+          <div className="group bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ">
+            <h2 className="text-4xl font-bold text-primary group-hover:text-red-500 transition">
+              {filteredClubs.length}
+            </h2>
+            <p className="mt-2 text-gray-600 font-medium">Total Clubs</p>
+          </div>
+
+          {/* Active */}
+          <div className="group bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ">
+            <h2 className="text-4xl font-bold text-green-600 group-hover:text-green-700 transition">
+              {approvedClubs}
+            </h2>
+            <p className="mt-2 text-gray-600 font-medium">Approved</p>
+          </div>
+
+          {/* Expired */}
+          <div className="group bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ">
+            <h2 className="text-4xl font-bold text-gray-400 group-hover:text-gray-600 transition">
+              {rejectedClubs}
+            </h2>
+            <p className="mt-2 text-gray-600 font-medium">Rejected</p>
+          </div>
+
+          {/* Pending Payment */}
+          <div className="group bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ">
+            <h2 className="text-4xl font-bold text-yellow-500 group-hover:text-yellow-600 transition">
+              {pendingClubs}
+            </h2>
+            <p className="mt-2 text-gray-600 font-medium">Pending</p>
           </div>
         </div>
 

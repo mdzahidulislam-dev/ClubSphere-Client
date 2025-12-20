@@ -1,5 +1,5 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import {  MapPin, MoreVertical } from "lucide-react";
+import { MapPin, MoreVertical } from "lucide-react";
 import React, { useState } from "react";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { FaMoneyBills } from "react-icons/fa6";
@@ -21,8 +21,11 @@ const Clubs = () => {
 
   const { data: clubs = [], isLoading } = useQuery({
     queryKey: ["myClubs", user?.email],
+    enabled: Boolean(user?.email),
     queryFn: async () => {
-      const res = await axiosSecure.get("/clubs");
+      const res = await axiosSecure.get("/all-clubs/status", {
+        params: { status: "approved" },
+      });
       return res.data;
     },
   });
@@ -77,8 +80,8 @@ const Clubs = () => {
           <div className=" relative justify-center ">
             <div className="flex flex-col gap-2 text-center">
               <h1 className="text-4xl md:text-4xl font-semibold text-primary">
-                All Clubs 
-                 <span className="text-lg"> ({filteredClubs.length})</span>
+                All Clubs
+                <span className="text-lg"> ({filteredClubs.length})</span>
               </h1>
               <p className=" text-secondary">
                 Browse all available clubs, explore details, and find the
@@ -234,7 +237,9 @@ const Clubs = () => {
 
                       {/* Action Buttons at Bottom */}
                       <div className="flex gap-3 mt-auto">
-                        <Link to={`/club-details/${club._id}`} className="flex-1 flex items-center justify-center gap-2 bg-forth text-white py-2.5 rounded-lg font-medium">
+                        <Link
+                          to={`/club-details/${club._id}`}
+                          className="flex-1 flex items-center justify-center gap-2 bg-forth text-white py-2.5 rounded-lg font-medium">
                           <MdOutlinePageview size={18} />
                           view Details
                         </Link>

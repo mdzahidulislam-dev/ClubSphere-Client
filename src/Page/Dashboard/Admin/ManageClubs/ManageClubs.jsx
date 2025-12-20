@@ -45,8 +45,10 @@ export default function ManageClubs() {
   const queryClient = useQueryClient();
   const axiosSecure = useAxios();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const [managers, setManagers] = useState({});
+
+  
 
   const { data: clubs = [], isLoading } = useQuery({
     queryKey: ["clubs"],
@@ -67,7 +69,7 @@ export default function ManageClubs() {
 
         const results = await Promise.all(
           uniqueEmails.map(async (email) => {
-            const res = await axiosSecure.get(`/clubs/${email}`);
+            const res = await axiosSecure.get(`/users/${email}`);
             return res.data;
           })
         );

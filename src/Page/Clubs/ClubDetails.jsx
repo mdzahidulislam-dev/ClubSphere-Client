@@ -3,15 +3,33 @@ import React from "react";
 import { FaUsers } from "react-icons/fa";
 import useAuth from "../../Hooks/useAuth";
 import useAxios from "../../Hooks/useAxios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import Loader from "../../Components/Loader";
 import { FaMoneyBills } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 const ClubDetails = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const axiosSecure = useAxios();
   const { id } = useParams();
+  const queryClient = useQueryClient();
+
+  const { data: membership = null } = useQuery({
+    queryKey: ["membership", user?.email, id],
+    enabled: !!user?.email && !!id,
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        `/membership/${user.email}?clubId=${id}`
+      );
+      return res.data;
+    },
+  });
+  // console.log(membership[0]?.status);
 
   const { data: club = null, isLoading } = useQuery({
     queryKey: ["club-details", id],
@@ -20,19 +38,80 @@ const ClubDetails = () => {
       return res.data;
     },
   });
+
   const { data: manager = null } = useQuery({
-    queryKey: ["user", user],
+    queryKey: ["user", club?.managerEmail],
     enabled: !!club?.managerEmail,
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/${club.managerEmail}`);
       return res.data;
     },
   });
+  const { mutate: payClubFee } = useMutation({
+    mutationFn: async (paymentInfo) => {
+      const res = await axiosSecure.post(
+        "/create-checkout-session",
+        paymentInfo
+      );
+      return res.data.url;
+    },
+    onSuccess: (url) => {
+      window.location.href = url;
+      queryClient.invalidateQueries(["membership", user?.email, id]);
+    },
+  });
   if (isLoading) return <Loader></Loader>;
-  console.log(manager);
+
+  const joinClub = async (club) => {
+    if (!user) {
+      return toast.error("Please login first");
+    }
+
+    const membershipPayload = {
+      clubId: club._id,
+      clubName: club.clubName,
+      clubFee: club.membershipFee,
+      clubManagerEmail: club.managerEmail,
+      memberEmail: user.email,
+      memberName: user.displayName,
+
+      memberPhoto: user.photoURL,
+      status: club.membershipFee === "0" ? "paid" : "pending",
+    };
+
+    if (club.membershipFee === "0") {
+      try {
+        await axiosSecure.post("/addMembership", membershipPayload);
+        queryClient.invalidateQueries(["membership", user?.email, id]);
+        // Success message
+        Swal.fire({
+          title: "Success!",
+          text: `Successfully joined ${club.clubName}!`,
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+      } catch (err) {
+        if (err) {
+          toast.error("Failed to join club. Please try again.");
+        }
+      }
+      return;
+    }
+
+    // Paid club -> start payment process
+    payClubFee(membershipPayload);
+  };
 
   return (
     <div className="flex flex-col flex-1 mx-auto max-w-7xl  px-5 lg:px-0  gap-8 my-8">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary font-semibold w-fit">
+        <ArrowLeft size={18} />
+        Back
+      </button>
+
       <div
         className="bg-cover bg-center flex flex-col justify-end overflow-hidden min-h-[200px] lg:min-h-[600px] md:min-h-[500px] rounded-2xl"
         style={{
@@ -47,7 +126,7 @@ const ClubDetails = () => {
             <p className="text-white text-sm font-medium">{club.category}</p>
           </div>
 
-          <h1 className="text-white text-4xl md:text-5xl font-bold leading-tight">
+          <h1 className="text-white text-2xl md:text-5xl font-bold leading-tight">
             {club.clubName}
           </h1>
         </div>
@@ -165,9 +244,25 @@ const ClubDetails = () => {
           {/* Right Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-28 flex flex-col gap-6 p-6 rounded-xl  bg-primary/70">
-              <button className="h-12 rounded-lg bg-primary hover:bg-[#e94848] text-white font-bold">
-                Join Club
-              </button>
+              {membership?.status === "paid" ? (
+                <button
+                  disabled
+                  className="flex justify-center items-center h-12 rounded-lg bg-primary/50 text-white font-bold cursor-not-allowed">
+                  Already Joined
+                </button>
+              ) : membership?.status === "pending" ? (
+                <button
+                  disabled
+                  className="flex justify-center items-center h-12 rounded-lg bg-yellow-500 text-white font-bold cursor-not-allowed">
+                  Payment Pending
+                </button>
+              ) : (
+                <button
+                  onClick={() => joinClub(club)}
+                  className="flex justify-center items-center h-12 rounded-lg bg-primary hover:bg-[#e94848] text-white font-bold">
+                  Join Club
+                </button>
+              )}
 
               <div className="flex flex-col gap-4 text-slate-700 dark:text-white">
                 <p className="flex items-center gap-1">
@@ -187,7 +282,7 @@ const ClubDetails = () => {
                   </span>
                 </p>
                 <p className="flex items-center gap-1">
-                  <FaUsers /> 142 Members
+                  <FaUsers /> {club.membersCount || 0}
                 </p>
               </div>
 

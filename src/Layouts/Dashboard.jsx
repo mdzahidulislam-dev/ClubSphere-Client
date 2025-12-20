@@ -101,12 +101,12 @@ const Dashboard = () => {
     } else if (userRole === "member") {
       items.push(
         {
-          name: "My Clubs",
+          name: "Joined Club",
           path: "/dashboard/member/my-clubs",
           icon: <FaUsers />,
         },
         {
-          name: "My Events",
+          name: "Joined Event",
           path: "/dashboard/member/my-events",
           icon: <MdEvent />,
         },
