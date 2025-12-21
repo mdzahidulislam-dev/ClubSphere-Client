@@ -269,7 +269,7 @@ const EditClub = ({ closeModal, selectedClub }) => {
 
                   {/* Location */}
                   <label className="flex flex-col gap-2 relative">
-                    <span className="text-primary text-sm font-medium">
+                    <span className=" text-sm font-medium">
                       Location <span className="text-red-400">*</span>
                     </span>
                     <div className="relative">
@@ -293,7 +293,7 @@ const EditClub = ({ closeModal, selectedClub }) => {
                   </label>
                   {/* Membership Fee */}
                   <label className="flex flex-col gap-2">
-                    <span className="text-primary text-sm font-medium">
+                    <span className=" text-sm font-medium">
                       Membership Fee (Monthly)
                     </span>
                     <div className="relative">
@@ -345,7 +345,7 @@ const EditClub = ({ closeModal, selectedClub }) => {
               </div>
               {/* File Upload */}
               <div className="flex flex-col gap-2">
-                <span className="text-primary text-sm font-medium">
+                <span className=" text-sm font-medium">
                   Banner Image <span className="text-red-400">*</span>
                 </span>
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6">
@@ -385,9 +385,7 @@ const EditClub = ({ closeModal, selectedClub }) => {
                         id="dropzone-file"
                         type="file"
                         accept="image/*"
-                        // {...register("bannerImage", {
-                        //   required: "Banner image is required",
-                        // })}
+                       
                         {...register("bannerImage", {
                           validate: (fileList) => {
                             if (!fileList || fileList.length === 0) return true;

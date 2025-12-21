@@ -256,7 +256,7 @@ const CreateNewClub = ({ closeModal }) => {
 
                   {/* Location */}
                   <label className="flex flex-col gap-2 relative">
-                    <span className="text-primary text-sm font-medium">
+                    <span className=" text-sm font-medium">
                       Location <span className="text-red-400">*</span>
                     </span>
                     <div className="relative">
@@ -280,7 +280,7 @@ const CreateNewClub = ({ closeModal }) => {
                   </label>
                   {/* Membership Fee */}
                   <label className="flex flex-col gap-2">
-                    <span className="text-primary text-sm font-medium">
+                    <span className=" text-sm font-medium">
                       Membership Fee (Monthly)
                     </span>
                     <div className="relative">
@@ -332,7 +332,7 @@ const CreateNewClub = ({ closeModal }) => {
               </div>
               {/* File Upload */}
               <div className="flex flex-col gap-2">
-                <span className="text-primary text-sm font-medium">
+                <span className=" text-sm font-medium">
                   Banner Image <span className="text-red-400">*</span>
                 </span>
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6">

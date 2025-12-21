@@ -5,7 +5,6 @@ import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { FaMoneyBills } from "react-icons/fa6";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../Hooks/useAxios";
-import useAuth from "../../Hooks/useAuth";
 import Loader from "../../Components/Loader";
 import { MdOutlinePageview } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -16,12 +15,10 @@ const Clubs = () => {
   const [priceFilter, setPriceFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
-  const { user } = useAuth();
   const axiosSecure = useAxios();
 
   const { data: clubs = [], isLoading } = useQuery({
-    queryKey: ["myClubs", user?.email],
-    enabled: Boolean(user?.email),
+    queryKey: ["all-Clubs"],
     queryFn: async () => {
       const res = await axiosSecure.get("/all-clubs/status", {
         params: { status: "approved" },
@@ -159,7 +156,7 @@ const Clubs = () => {
               return (
                 <div
                   key={club._id}
-                  className="  mt-8 club-card group transition-transform duration-500 ease-in-out hover:scale-102">
+                  className="  mt-4 club-card group transition-transform duration-500 ease-in-out hover:scale-102">
                   <div className="relative overflow-hidden rounded-2xl shadow-2xl flex flex-col h-full">
                     {/* Background Image */}
                     <div className="relative h-48 bg-linear-to-br from-orange-200 to-fuchsia-600-800">

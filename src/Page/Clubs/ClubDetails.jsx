@@ -29,7 +29,6 @@ const ClubDetails = () => {
       return res.data;
     },
   });
-  // console.log(membership[0]?.status);
 
   const { data: club = null, isLoading } = useQuery({
     queryKey: ["club-details", id],
@@ -167,28 +166,10 @@ const ClubDetails = () => {
                 ))}
               </div>
             </section>
-            <section>
-              <h2 className="text-2xl font-bold text-primary mb-6">
-                Upcoming Events
-              </h2>
-
-              <div className="flex flex-col gap-4">
-                {[
-                  "Sunrise Hike at Eagle Peak",
-                  "Lakeside Trail Cleanup",
-                  "Annual Winter Camping Trip",
-                ].map((event, idx) => (
-                  <div key={idx} className="p-4 rounded-xl bg-primary/50">
-                    <p className="text-lg font-bold text-slate-800 dark:text-white">
-                      {event}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </section>
+           
 
             {/* Gallery */}
-            <section>
+            {/* <section>
               <h2 className="text-2xl font-bold text-primary  mb-6">Gallery</h2>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -238,7 +219,7 @@ const ClubDetails = () => {
                   />
                 ))}
               </div>
-            </section>
+            </section> */}
           </div>
 
           {/* Right Sidebar */}

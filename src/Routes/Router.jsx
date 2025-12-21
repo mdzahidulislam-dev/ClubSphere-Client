@@ -29,6 +29,7 @@ import PaymentSuccess from "../Page/Payment/PaymentSuccess";
 import MyJoinClubs from "../Page/Dashboard/Member/My Clubs/MyJoinClubs";
 import AdminRoute from "./AdminRoute";
 import ManagerRoute from "./ManagerRoute";
+import EventsDetails from "../Page/Events/EventsDetails";
 
 export const router = createBrowserRouter([
   {
@@ -68,6 +69,10 @@ export const router = createBrowserRouter([
       {
         path: "club-details/:id",
         element: <ClubDetails></ClubDetails>,
+      },
+      {
+        path: "event-details/:id",
+        element: <EventsDetails></EventsDetails>
       },
       {
         path: "payment/:id",
