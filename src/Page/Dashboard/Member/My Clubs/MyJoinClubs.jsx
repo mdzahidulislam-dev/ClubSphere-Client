@@ -12,8 +12,9 @@ import Loader from "../../../../Components/Loader";
 const MyJoinClubs = () => {
   const { user } = useAuth();
   const axiosSecure = useAxios();
-  const { data: myJoinedClub = [] } = useQuery({
-    queryKey: ["membership", user?.email],
+
+  const { data: myJoinedClub = [], isLoading: membershipLoading } = useQuery({
+    queryKey: ["myMemberships", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(`/my-memberships/${user.email}`);
@@ -21,22 +22,22 @@ const MyJoinClubs = () => {
     },
   });
 
-  const { data: clubs = [], isLoading } = useQuery({
-    queryKey: ["myClubs", user?.email],
+  const { data: allClubs = [], isLoading: clubsLoading } = useQuery({
+    queryKey: ["allClubs"],
+    enabled: myJoinedClub.length > 0,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/clubs/${user.email}`);
+      const res = await axiosSecure.get(`/clubs`);
       return res.data;
     },
   });
+
   const joinedClubIds = myJoinedClub.map((m) => m.clubId);
 
-  // filter clubs
-  const filteredClubs = clubs.filter((club) =>
+  const filteredClubs = allClubs.filter((club) =>
     joinedClubIds.includes(club._id)
   );
 
-  if (isLoading) return <Loader></Loader>;
-
+  if (membershipLoading || clubsLoading) return <Loader />;
 
   return (
     <div>

@@ -9,6 +9,7 @@ import { FaUserGroup } from "react-icons/fa6";
 import { MdEvent, MdOutlineDashboard } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import useAxios from "../Hooks/useAxios";
+import useRole from "../Hooks/useRole";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -17,7 +18,7 @@ const Navbar = () => {
   const location = useLocation();
   const axiosSecure = useAxios();
   const navigate = useNavigate();
-  const [userRole, setUserRole] = useState();
+  const { role } = useRole();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -43,11 +44,8 @@ const Navbar = () => {
       ? [{ name: "PROFILE", path: "/profile", icon: <CgProfile /> }]
       : []),
   ];
-
-  axiosSecure(`/users/${user?.email}`).then((res) => {
-    setUserRole(res.data.role);
-  });
-
+  console.log(role)
+  
   const navItem = (
     <>
       {navItems.map((item) => (
@@ -174,7 +172,7 @@ const Navbar = () => {
                   </NavLink>
 
                   <NavLink
-                    to={`/dashboard/${userRole}`}
+                    to={`/dashboard/${role}`}
                     className={({ isActive }) =>
                       `relative transition-all duration-300 group px-3 py-2 rounded font-bold ${
                         isActive ? "text-primary" : "hover:text-primary"

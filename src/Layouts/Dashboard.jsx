@@ -16,21 +16,15 @@ import {
 } from "react-icons/md";
 import { FaUserGroup, FaUsers, FaUsersGear } from "react-icons/fa6";
 import { FaHome } from "react-icons/fa";
-import useAxios from "../Hooks/useAxios";
 import { RiTeamLine } from "react-icons/ri";
+import useRole from "../Hooks/useRole";
+import Loader from "../Components/Loader";
 
 const Dashboard = () => {
   const { signOutFunc, setUser, user } = useAuth();
-  const [userRole, setUserRole] = useState();
-  const axiosSecure = useAxios();
+  const { role, isLoading } = useRole();
   const navigate = useNavigate();
-  useEffect(() => {
-    if (!user?.email) return;
 
-    axiosSecure(`/users/${user.email}`).then((res) => {
-      setUserRole(res.data.role);
-    });
-  }, [user, axiosSecure]);
   const handelSignOut = () => {
     signOutFunc()
       .then(() => {
@@ -52,12 +46,12 @@ const Dashboard = () => {
     const items = [
       {
         name: "Overview",
-        path: `/dashboard/${userRole}`,
+        path: `/dashboard/${role}`,
         icon: <MdOutlineDashboard />,
       },
     ];
 
-    if (userRole === "admin") {
+    if (role === "admin") {
       items.push(
         {
           name: "Manage Users",
@@ -75,7 +69,7 @@ const Dashboard = () => {
           icon: <MdOutlinePayments />,
         }
       );
-    } else if (userRole === "manager") {
+    } else if (role === "manager") {
       items.push(
         {
           name: "My Clubs",
@@ -98,7 +92,7 @@ const Dashboard = () => {
           icon: <MdEventAvailable />,
         }
       );
-    } else if (userRole === "member") {
+    } else if (role === "member") {
       items.push(
         {
           name: "Joined Club",
@@ -118,7 +112,7 @@ const Dashboard = () => {
       );
     }
     return items;
-  }, [userRole]);
+  }, [role]);
 
   const navItem = (
     <>
@@ -162,6 +156,9 @@ const Dashboard = () => {
       )}
     </>
   );
+console.log(role)
+
+  if (isLoading) return <Loader></Loader>;
   return (
     <div className="drawer lg:drawer-open mx-auto">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
@@ -251,7 +248,7 @@ const Dashboard = () => {
                         )}
                       </NavLink>
                       <NavLink
-                        to={`/dashboard/${userRole}`}
+                        to={`/dashboard/${role}`}
                         className={({ isActive }) =>
                           `relative transition-all duration-300 group px-3 py-2 rounded font-bold ${
                             isActive ? "text-primary" : "hover:text-primary"
