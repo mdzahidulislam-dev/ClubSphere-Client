@@ -27,7 +27,7 @@ const ViewPayments = () => {
   });
 
   if (isLoading) return <Loader></Loader>;
-  console.log(payments);
+
 
   return (
     <div>

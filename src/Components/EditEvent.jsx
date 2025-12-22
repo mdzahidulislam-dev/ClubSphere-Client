@@ -78,7 +78,7 @@ const EditEvent = ({ closeModal, selectedEvent }) => {
   }, [bannerImage]);
 
   const UpdateEvent = async (data) => {
-    console.log(data);
+ 
 
     try {
       setIsSubmitting(true);

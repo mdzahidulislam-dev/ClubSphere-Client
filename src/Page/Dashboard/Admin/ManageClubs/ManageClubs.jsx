@@ -91,7 +91,7 @@ export default function ManageClubs() {
   if (isLoading) return <Loader></Loader>;
 
   const Approve = async (id, clubName) => {
-    console.log(id);
+
     Swal.fire({
       title: "Are you sure?",
       text: `You want to Approve "${clubName}"?`,
@@ -122,7 +122,7 @@ export default function ManageClubs() {
   };
 
   const Reject = (id, clubName) => {
-    console.log(id);
+
     Swal.fire({
       title: "Are you sure?",
       text: `You want to reject "${clubName}"?`,

@@ -70,7 +70,6 @@ const CreateNewEvent = ({ closeModal }) => {
   if (isLoading) return <Loader></Loader>;
 
   const createEvent = async (data) => {
-    console.log(data);
 
     try {
       setIsSubmitting(true);
@@ -151,7 +150,6 @@ const CreateNewEvent = ({ closeModal }) => {
     });
   };
 
-  console.log(clubs);
 
   return (
     <div className="min-h-screen font-display flex flex-col overflow-x-hidden">

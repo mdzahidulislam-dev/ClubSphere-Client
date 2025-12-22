@@ -73,7 +73,7 @@ const EditClub = ({ closeModal, selectedClub }) => {
   }, [bannerImage]);
 
   const UpdateClub = async (data) => {
-    console.log(data);
+
 
     try {
       setIsSubmitting(true);

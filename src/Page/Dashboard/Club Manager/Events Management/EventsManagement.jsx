@@ -37,7 +37,6 @@ const EventsManagement = () => {
       return res.data;
     },
   });
-  console.log(events);
 
   if (isLoading) return <Loader></Loader>;
 

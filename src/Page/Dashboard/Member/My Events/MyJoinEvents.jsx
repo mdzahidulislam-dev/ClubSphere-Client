@@ -27,7 +27,7 @@ const MyJoinedEvents = () => {
 
   if (isLoading) return <Loader />;
 
-  console.log("My Joined Events:", myJoinedEvents);
+
 
   return (
     <div>

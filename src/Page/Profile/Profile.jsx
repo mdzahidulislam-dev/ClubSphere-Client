@@ -7,10 +7,10 @@ import { AtSign } from "lucide-react";
 import { useForm } from "react-hook-form";
 import PhotoInput from "../../Components/PhotoInput";
 import axios from "axios";
-import useAxios from "../../Hooks/useAxios";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import useRole from "../../Hooks/useRole";
+import useAxios from "../../Hooks/useAxios";
 
 const Profile = () => {
   const { user, setLoading, updateProfileFunc } = useAuth();

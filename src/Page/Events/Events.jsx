@@ -23,7 +23,7 @@ const Events = () => {
       return res.data;
     },
   });
-  console.log(events);
+
 
   if (isLoading) return <Loader></Loader>;
 

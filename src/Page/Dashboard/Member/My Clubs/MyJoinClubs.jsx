@@ -36,7 +36,7 @@ const MyJoinClubs = () => {
   );
 
   if (isLoading) return <Loader></Loader>;
-  console.log(myJoinedClub);
+
 
   return (
     <div>

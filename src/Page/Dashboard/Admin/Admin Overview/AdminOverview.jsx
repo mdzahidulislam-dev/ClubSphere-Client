@@ -116,7 +116,7 @@ const AdminOverview = () => {
           return (
             <div
               key={index}
-              className="bg-primary backdrop-blur-sm rounded-2xl p-6   transition-all">
+              className="bg-primary/50 backdrop-blur-sm rounded-2xl p-6   transition-all">
               <div className="flex items-start justify-between mb-4">
                 <div className={`p-3 rounded-xl bg-linear-to-br ${card.color}`}>
                   <Icon className="text-2xl text-white" />

@@ -21,7 +21,6 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  console.log(location.state);
   
 
   const login = (data) => {

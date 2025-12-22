@@ -55,7 +55,6 @@ const CreateNewClub = ({ closeModal }) => {
   }, [bannerImage]);
 
   const createClub = async (data) => {
-    console.log(data);
 
     try {
       setIsSubmitting(true);

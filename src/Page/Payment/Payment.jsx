@@ -15,7 +15,6 @@ const Payment = () => {
       return res.data;
     },
   });
-  console.log(club);
   
   if (isLoading) return <Loader></Loader>;
   return <div>payment : {club.clubName}</div>;
