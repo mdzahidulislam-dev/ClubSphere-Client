@@ -11,6 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import Loader from "../../../../Components/Loader";
 
 const AdminOverview = () => {
   const axiosSecure = useAxios();
@@ -45,13 +46,7 @@ const AdminOverview = () => {
 
   const isLoading = statsLoading || chartLoading || membershipsLoading;
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
+  if (isLoading) return <Loader></Loader>;
 
   const statCards = [
     {
@@ -182,7 +177,7 @@ const AdminOverview = () => {
       {/* Recent Memberships  Table */}
       <div className=" backdrop-blur-sm rounded-2xl mb-10  ">
         <h2 className="text-2xl font-bold text-primary mb-6">
-          Recent Memberships 
+          Recent Memberships
         </h2>
 
         {recentMemberships.length > 0 ? (
