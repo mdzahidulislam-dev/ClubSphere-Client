@@ -2,7 +2,6 @@
 
 <div align="center">
 
-![ClubSphere Logo](https://i.ibb.co/placeholder-logo.png)
 
 **Discover, Join, and Manage Local Clubs with Ease**
 
@@ -29,7 +28,6 @@
 - [Database Schema](#-database-schema)
 - [Payment Integration](#-payment-integration)
 - [Project Structure](#-project-structure)
-- [Screenshots](#-screenshots)
 - [Contributing](#-contributing)
 - [License](#-license)
 - [Contact](#-contact)
@@ -308,8 +306,8 @@ The main purpose of ClubSphere is to:
 For testing and evaluation purposes:
 
 ```
-Admin Email: admin@clubsphere.com
-Admin Password: Admin@123
+Admin Email: programming@hero.com
+Admin Password: Contact me!!! //hello
 ```
 
 **Note**: Please use these credentials responsibly for testing purposes only.
@@ -1061,40 +1059,6 @@ ClubSphere-Server/
 └── README.md
 ```
 
----
-
-## 📸 Screenshots
-
-### Home Page
-![Home Page](https://i.ibb.co/placeholder-home.png)
-*Beautiful hero section with Framer Motion animations and featured clubs*
-
-### Clubs Listing
-![Clubs Page](https://i.ibb.co/placeholder-clubs.png)
-*Browse all clubs with search, filter, and sort functionality*
-
-### Club Details
-![Club Details](https://i.ibb.co/placeholder-club-details.png)
-*Detailed club information with join functionality*
-
-### Admin Dashboard
-![Admin Dashboard](https://i.ibb.co/placeholder-admin.png)
-*Comprehensive admin panel with statistics and charts*
-
-### Club Manager Dashboard
-![Manager Dashboard](https://i.ibb.co/placeholder-manager.png)
-*Manage clubs, events, and members efficiently*
-
-### Member Dashboard
-![Member Dashboard](https://i.ibb.co/placeholder-member.png)
-*View memberships, events, and payment history*
-
-### Payment Integration
-![Stripe Payment](https://i.ibb.co/placeholder-payment.png)
-*Secure payment processing with Stripe*
-
----
-
 ## 🚀 Deployment Guide
 
 ### Prerequisites for Deployment
@@ -1465,20 +1429,17 @@ SOFTWARE.
 
 **Md Zahidul Islam**
 
-- 🌐 **Portfolio**: [Your Portfolio Website]
-- 💼 **LinkedIn**: [Your LinkedIn Profile]
+- 💼 **LinkedIn**: [Your LinkedIn Profile](https://www.linkedin.com/in/mdzahidulislam-dev/)
 - 🐙 **GitHub**: [@mdzahidulislam-dev](https://github.com/mdzahidulislam-dev)
-- 📧 **Email**: your.email@example.com
-- 🐦 **Twitter/X**: [@YourHandle]
+- 📧 **Email**: mdzahidulislam.dev@gmail.com
+
 
 ### Connect With Me
 
 I'm always open to interesting conversations and collaboration opportunities!
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=for-the-badge&logo=linkedin)](your-linkedin-url)
-[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=for-the-badge&logo=github)](https://github.com/mdzahidulislam-dev)
-[![Portfolio](https://img.shields.io/badge/Portfolio-Visit-green?style=for-the-badge&logo=google-chrome)](your-portfolio-url)
-[![Email](https://img.shields.io/badge/Email-Contact-red?style=for-the-badge&logo=gmail)](mailto:your.email@example.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/mdzahidulislam-dev/)
+[![Email](https://img.shields.io/badge/Email-Contact-red?style=for-the-badge&logo=gmail)](mailto:mdzahidulislam.dev@gmail.com)
 
 ---
 
@@ -1516,42 +1477,6 @@ Special thanks to:
 
 ---
 
-## 🗺️ Roadmap
-
-### Phase 1 - Completed ✅
-- [x] Basic authentication system
-- [x] Club management features
-- [x] Event management system
-- [x] Payment integration
-- [x] Role-based dashboards
-- [x] Responsive design
-
-### Phase 2 - In Progress 🚧
-- [ ] Advanced analytics
-- [ ] Email notification system
-- [ ] Review and rating system
-- [ ] Club announcements feature
-
-### Phase 3 - Planned 📋
-- [ ] Mobile application (React Native)
-- [ ] Real-time chat system
-- [ ] Video conferencing for events
-- [ ] Advanced reporting tools
-- [ ] Multi-language support
-- [ ] Push notifications
-- [ ] Calendar integration
-- [ ] Social media integration
-
-### Phase 4 - Future Enhancements 🔮
-- [ ] AI-powered club recommendations
-- [ ] Automated event reminders
-- [ ] Member matching system
-- [ ] Gamification features
-- [ ] Blog/News section
-- [ ] Merchandise store
-- [ ] Sponsorship management
-
----
 
 ## 💡 Lessons Learned
 
