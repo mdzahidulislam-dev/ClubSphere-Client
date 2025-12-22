@@ -84,7 +84,7 @@ const Navbar = () => {
           <NavLink
             state={location.state}
             to="/sign-up"
-            className="px-4 py-2 rounded text-primary border border-primary hover:bg-primary hover:text-white transition btn">
+            className="px-4 py-2 bg-transparent rounded text-primary border border-primary hover:bg-primary hover:text-white transition btn">
             Sign Up
           </NavLink>
         </>
@@ -209,7 +209,7 @@ const Navbar = () => {
         {/* Mobile Dropdown */}
         {open && !user && (
           <div className="md:hidden flex justify-end">
-            <div className="w-56 px-6 py-4 space-y-4 flex flex-col bg-secondary/10 backdrop-blur">
+            <div className="w-56 px-6 py-4 space-y-4 flex flex-col bg-white/50 backdrop-blur">
               {navItem}
             </div>
           </div>
