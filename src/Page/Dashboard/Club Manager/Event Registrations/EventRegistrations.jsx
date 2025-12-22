@@ -17,6 +17,7 @@ const EventRegistrations = () => {
       return res.data;
     },
   });
+console.log(registrations);
 
   if (isLoading) return <Loader />;
 

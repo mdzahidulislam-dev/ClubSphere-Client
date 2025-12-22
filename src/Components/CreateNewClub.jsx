@@ -202,6 +202,7 @@ const CreateNewClub = ({ closeModal }) => {
                         <option value="travel">Travel</option>
                         <option value="entertainment">Entertainment</option>
                         <option value="business">Business</option>
+                        <option value="food">Food & Cooking</option>
                       </select>
                       <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
                         <IoIosArrowDropdownCircle />

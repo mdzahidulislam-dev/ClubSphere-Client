@@ -73,8 +73,6 @@ const EditClub = ({ closeModal, selectedClub }) => {
   }, [bannerImage]);
 
   const UpdateClub = async (data) => {
-
-
     try {
       setIsSubmitting(true);
       let clubImg = selectedClub.bannerImage;
@@ -216,6 +214,11 @@ const EditClub = ({ closeModal, selectedClub }) => {
                         <option value="social">Social & Networking</option>
                         <option value="gaming">Gaming</option>
                         <option value="photography">Photography</option>
+                        <option value="literature">Literature</option>
+                        <option value="travel">Travel</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="business">Business</option>
+                        <option value="food">Food & Cooking</option>
                       </select>
                       <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
                         <IoIosArrowDropdownCircle />
@@ -385,7 +388,6 @@ const EditClub = ({ closeModal, selectedClub }) => {
                         id="dropzone-file"
                         type="file"
                         accept="image/*"
-                       
                         {...register("bannerImage", {
                           validate: (fileList) => {
                             if (!fileList || fileList.length === 0) return true;

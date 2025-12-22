@@ -137,6 +137,7 @@ const ClubDetails = () => {
       clubManagerEmail: club.managerEmail,
       memberEmail: user.email,
       memberName: user.displayName,
+      membershipStatus: "active",
       memberPhoto: user.photoURL,
       status: club.membershipFee === "0" ? "paid" : "pending",
     };

@@ -41,10 +41,9 @@ const ManagerOverview = () => {
   // Fetch payments for manager's clubs
   const { data: payments = [], isLoading: paymentsLoading } = useQuery({
     queryKey: ["manager-payments", user?.email],
-    enabled: !!user?.email,
+    enabled: !!user?.email && clubs.length > 0,
     queryFn: async () => {
       const res = await axiosSecure.get(`/payments`);
-      // Filter payments for manager's clubs
       const managerClubIds = clubs.map((club) => club._id);
       return res.data.filter((payment) =>
         managerClubIds.includes(payment.clubId)
@@ -55,6 +54,65 @@ const ManagerOverview = () => {
   if (clubsLoading || eventsLoading || membersLoading || paymentsLoading) {
     return <Loader />;
   }
+
+  // Calculate growth percentages dynamically
+  const calculateGrowth = (data, dateField) => {
+    if (!data || data.length === 0) return 0;
+
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
+    const sixtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
+
+    // Last 30 days count
+    const lastMonthCount = data.filter((item) => {
+      const itemDate = new Date(item[dateField]);
+      return itemDate >= thirtyDaysAgo;
+    }).length;
+
+    // Previous 30 days count (31-60 days ago)
+    const previousMonthCount = data.filter((item) => {
+      const itemDate = new Date(item[dateField]);
+      return itemDate >= sixtyDaysAgo && itemDate < thirtyDaysAgo;
+    }).length;
+
+    // Calculate percentage growth
+    if (previousMonthCount === 0) {
+      return lastMonthCount > 0 ? 100 : 0;
+    }
+
+    const growth =
+      ((lastMonthCount - previousMonthCount) / previousMonthCount) * 100;
+    return Math.round(growth * 10) / 10; // Round to 1 decimal
+  };
+
+  // Calculate revenue growth
+  const calculateRevenueGrowth = () => {
+    if (!payments || payments.length === 0) return 0;
+
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
+    const sixtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
+
+    const lastMonthRevenue = payments
+      .filter((p) => new Date(p.paidAt) >= thirtyDaysAgo)
+      .reduce((sum, p) => sum + p.amount, 0);
+
+    const previousMonthRevenue = payments
+      .filter(
+        (p) =>
+          new Date(p.paidAt) >= sixtyDaysAgo &&
+          new Date(p.paidAt) < thirtyDaysAgo
+      )
+      .reduce((sum, p) => sum + p.amount, 0);
+
+    if (previousMonthRevenue === 0) {
+      return lastMonthRevenue > 0 ? 100 : 0;
+    }
+
+    const growth =
+      ((lastMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100;
+    return Math.round(growth * 10) / 10;
+  };
 
   // Calculate statistics
   const totalClubs = clubs.length;
@@ -67,10 +125,11 @@ const ManagerOverview = () => {
     0
   );
 
-  const clubGrowth = 12;
-  const memberGrowth = 8;
-  const eventGrowth = 15;
-  const revenueGrowth = 20;
+  // Dynamic growth calculations
+  const clubGrowth = calculateGrowth(clubs, "createdAt");
+  const memberGrowth = calculateGrowth(members, "joinAt");
+  const eventGrowth = calculateGrowth(events, "eventDateTime");
+  const revenueGrowth = calculateRevenueGrowth();
 
   const stats = [
     {
@@ -174,14 +233,19 @@ const ManagerOverview = () => {
         {stats.map((stat, index) => (
           <div
             key={index}
-            className=" rounded-xl p-6 hover:shadow-lg transition-shadow duration-300 bg-primary/70 broder ">
+            className="rounded-xl p-6 hover:shadow-lg transition-shadow duration-300 bg-primary/70 border border-primary">
             <div className="flex items-center justify-between mb-4">
               <div className={`${stat.bgColor} ${stat.color} p-3 rounded-lg`}>
                 {stat.icon}
               </div>
-              <div className="flex items-center text-sm font-semibold text-green-600">
+              <div
+                className={`flex items-center text-sm font-semibold ${
+                  stat.growth >= 0 ? "text-green-600" : "text-red-600"
+                }`}>
                 <svg
-                  className="w-4 h-4 mr-1"
+                  className={`w-4 h-4 mr-1 ${
+                    stat.growth < 0 ? "rotate-180" : ""
+                  }`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24">
@@ -192,9 +256,13 @@ const ManagerOverview = () => {
                     d="M5 10l7-7m0 0l7 7m-7-7v18"
                   />
                 </svg>
-               <p className="text-3xl text-green-500">
-                 +{stat.growth}%
-               </p>
+                <p
+                  className={`text-3xl ${
+                    stat.growth >= 0 ? "text-green-500" : "text-red-500"
+                  }`}>
+                  {stat.growth >= 0 ? "+" : ""}
+                  {stat.growth}%
+                </p>
               </div>
             </div>
 
