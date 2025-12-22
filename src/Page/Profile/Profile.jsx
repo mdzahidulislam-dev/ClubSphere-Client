@@ -10,9 +10,11 @@ import axios from "axios";
 import useAxios from "../../Hooks/useAxios";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import useRole from "../../Hooks/useRole";
 
 const Profile = () => {
   const { user, setLoading, updateProfileFunc } = useAuth();
+  const { role } = useRole();
   const [preview, setPreview] = useState(null);
   const axiosSecure = useAxios();
   const {
@@ -20,7 +22,7 @@ const Profile = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  
+
   const handleImagePreview = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -66,6 +68,7 @@ const Profile = () => {
       console.log(err);
     }
   };
+
   return (
     <div className="">
       <title>My Profile</title>
@@ -97,6 +100,7 @@ const Profile = () => {
                 {user?.displayName}
               </p>
               <p className=" text-base">{user?.email}</p>
+              <p className=" text-base text-green-500">{role}</p>
             </div>
           </div>
 

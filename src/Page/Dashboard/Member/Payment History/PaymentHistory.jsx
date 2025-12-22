@@ -90,7 +90,7 @@ const PaymentHistory = () => {
             <tr>
               <td
                 colSpan="5"
-                className="px-4 py-10 text-center text-gray-500 text-2xl">
+                className="px-4 py-10 text-center text-primary/20 text-3xl font-bold">
                 No payment history found
               </td>
             </tr>

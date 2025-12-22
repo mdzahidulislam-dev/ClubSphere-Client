@@ -172,7 +172,7 @@ const MyJoinClubs = () => {
             );
           })
         ) : (
-          <div className="col-span-full text-center text-primary/50 text-3xl py-20 font-bold">
+          <div className="col-span-full text-center text-primary/20 text-3xl py-20 font-bold">
             No Club Found
           </div>
         )}

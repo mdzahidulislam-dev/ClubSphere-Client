@@ -21,7 +21,6 @@ import ClubMembers from "../Page/Dashboard/Club Manager/Club Members/ClubMembers
 import EventsManagement from "../Page/Dashboard/Club Manager/Events Management/EventsManagement";
 import EventRegistrations from "../Page/Dashboard/Club Manager/Event Registrations/EventRegistrations";
 import MemberOverview from "../Page/Dashboard/Member/Member Overview/MemberOverview";
-import MyEvents from "../Page/Dashboard/Member/My Events/MyEvents";
 import PaymentHistory from "../Page/Dashboard/Member/Payment History/PaymentHistory";
 import ClubDetails from "../Page/Clubs/ClubDetails";
 import Payment from "../Page/Payment/Payment";
@@ -30,6 +29,7 @@ import MyJoinClubs from "../Page/Dashboard/Member/My Clubs/MyJoinClubs";
 import AdminRoute from "./AdminRoute";
 import ManagerRoute from "./ManagerRoute";
 import EventsDetails from "../Page/Events/EventsDetails";
+import MyJoinEvents from "../Page/Dashboard/Member/My Events/MyJoinEvents";
 
 export const router = createBrowserRouter([
   {
@@ -72,7 +72,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "event-details/:id",
-        element: <EventsDetails></EventsDetails>
+        element: <EventsDetails></EventsDetails>,
       },
       {
         path: "payment/:id",
@@ -198,7 +198,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/member/my-events",
-        element: <MyEvents></MyEvents>,
+        element: <MyJoinEvents></MyJoinEvents>,
       },
       {
         path: "/dashboard/member/payment-history",
