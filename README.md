@@ -28,6 +28,7 @@
 - [Database Schema](#-database-schema)
 - [Payment Integration](#-payment-integration)
 - [Project Structure](#-project-structure)
+- [Screenshots](#-screenshots)
 - [Contributing](#-contributing)
 - [License](#-license)
 - [Contact](#-contact)
@@ -307,7 +308,7 @@ For testing and evaluation purposes:
 
 ```
 Admin Email: programming@hero.com
-Admin Password: Contact me!!! //hello
+Admin Password: Contact with me //hello
 ```
 
 **Note**: Please use these credentials responsibly for testing purposes only.
@@ -1059,6 +1060,8 @@ ClubSphere-Server/
 └── README.md
 ```
 
+
+
 ## 🚀 Deployment Guide
 
 ### Prerequisites for Deployment
@@ -1400,7 +1403,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ```
 MIT License
 
-Copyright (c) 2024 Md Zahidul Islam
+Copyright (c) 2025 Md Zahidul Islam
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -1429,10 +1432,9 @@ SOFTWARE.
 
 **Md Zahidul Islam**
 
-- 💼 **LinkedIn**: [Your LinkedIn Profile](https://www.linkedin.com/in/mdzahidulislam-dev/)
+- 💼 **LinkedIn**: [@mdzahidulislam-dev](https://www.linkedin.com/in/mdzahidulislam-dev/)
 - 🐙 **GitHub**: [@mdzahidulislam-dev](https://github.com/mdzahidulislam-dev)
 - 📧 **Email**: mdzahidulislam.dev@gmail.com
-
 
 ### Connect With Me
 
@@ -1477,6 +1479,42 @@ Special thanks to:
 
 ---
 
+## 🗺️ Roadmap
+
+### Phase 1 - Completed ✅
+- [x] Basic authentication system
+- [x] Club management features
+- [x] Event management system
+- [x] Payment integration
+- [x] Role-based dashboards
+- [x] Responsive design
+
+### Phase 2 - In Progress 🚧
+- [ ] Advanced analytics
+- [ ] Email notification system
+- [ ] Review and rating system
+- [ ] Club announcements feature
+
+### Phase 3 - Planned 📋
+- [ ] Mobile application (React Native)
+- [ ] Real-time chat system
+- [ ] Video conferencing for events
+- [ ] Advanced reporting tools
+- [ ] Multi-language support
+- [ ] Push notifications
+- [ ] Calendar integration
+- [ ] Social media integration
+
+### Phase 4 - Future Enhancements 🔮
+- [ ] AI-powered club recommendations
+- [ ] Automated event reminders
+- [ ] Member matching system
+- [ ] Gamification features
+- [ ] Blog/News section
+- [ ] Merchandise store
+- [ ] Sponsorship management
+
+---
 
 ## 💡 Lessons Learned
 
@@ -1504,15 +1542,11 @@ Need help? Here's how to get support:
 - Check the [API Documentation](#-api-documentation)
 - Review the [Troubleshooting](#-troubleshooting) section
 
-### Community Support
-- 💬 [GitHub Discussions](https://github.com/mdzahidulislam-dev/ClubSphere-Client/discussions)
-- 🐛 [Report Issues](https://github.com/mdzahidulislam-dev/ClubSphere-Client/issues)
-- 📧 Email: support@clubsphere.com
 
 ### Professional Support
 For professional support or custom development:
-- 📧 Email: your.email@example.com
-- 💼 LinkedIn: [Your LinkedIn Profile]
+- 📧 Email: mdzahidulislam.dev@gmail.com
+- 💼 LinkedIn: [@mdzahidulislam-dev](https://www.linkedin.com/in/mdzahidulislam-dev/)
 
 ---
 
@@ -1536,7 +1570,7 @@ https://github.com/mdzahidulislam-dev/ClubSphere-Server
 
 ## 📝 Changelog
 
-### Version 1.0.0 (December 2024)
+### Version 1.0.0 (December 2025)
 - ✅ Initial release
 - ✅ Complete authentication system
 - ✅ Club management functionality
@@ -1584,10 +1618,6 @@ If you discover a security vulnerability, please email directly at:
 - [TanStack Query Docs](https://tanstack.com/query)
 - [Tailwind CSS Docs](https://tailwindcss.com/docs)
 
-### Related Projects
-- [Similar Project 1]
-- [Similar Project 2]
-- [Inspiration Project]
 
 ### Design Inspiration
 - [Meetup](https://www.meetup.com)
@@ -1613,6 +1643,6 @@ If you have any questions, suggestions, or just want to say hi, feel free to rea
 [![GitHub Stars](https://img.shields.io/github/stars/mdzahidulislam-dev/ClubSphere-Client?style=social)](https://github.com/mdzahidulislam-dev/ClubSphere-Client/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/mdzahidulislam-dev/ClubSphere-Client?style=social)](https://github.com/mdzahidulislam-dev/ClubSphere-Client/network/members)
 
-**© 2024 ClubSphere. All Rights Reserved.**
+**© 2025 ClubSphere. All Rights Reserved.**
 
 </div>
