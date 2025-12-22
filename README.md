@@ -307,7 +307,7 @@ For testing and evaluation purposes:
 
 ```
 Admin Email: programming@hero.com
-Admin Password: Contact with me //hello
+Admin Password: Contact with me!!!
 ```
 
 **Note**: Please use these credentials responsibly for testing purposes only.
