@@ -858,29 +858,7 @@ Admin → Club Manager → Member → Guest
 
 ---
 
-## 💰 Payment Integration
 
-### Stripe Integration Flow
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Client
-    participant Server
-    participant Stripe
-    
-    User->>Client: Click "Join Club" or "Register Event"
-    Client->>Server: POST /api/payments/create-intent
-    Server->>Stripe: Create Payment Intent
-    Stripe->>Server: Return clientSecret
-    Server->>Client: Return clientSecret
-    Client->>Stripe: Confirm Payment
-    Stripe->>Client: Payment Success/Failure
-    Client->>Server: POST /api/payments/verify
-    Server->>Server: Create Membership/Registration
-    Server->>Client: Confirmation Response
-    Client->>User: Show Success Message
-```
 
 ### Payment Testing
 
